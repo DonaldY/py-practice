@@ -10,8 +10,8 @@ try:
     input = browser.find_element(By.ID, 'kw') # 按照 ID 定位：id=kw
     input.send_keys('Python')                 # 文本框输入 python
     input.send_keys(Keys.ENTER)               # 按下按钮
-    wait = WebDriverWait(browser, 10)         # 等待 10 秒
-    wait.until(EC.presence_of_element_located((By.ID, 'content_left'))) # 等到某个元素加载完成：id=content_left
+    wait = WebDriverWait(browser, 10)         # 隐式等待：等待 10 秒
+    wait.until(EC.presence_of_element_located((By.ID, 'content_left'))) # 显式等待：等到某个元素加载完成：id=content_left
     print(browser.current_url)    # 打印 url
     print(browser.get_cookies())  # 打印 cookies
     print(browser.page_source)    # 打印 页面源码
