@@ -4,7 +4,7 @@ console.log('x', x)
 `
 
 const options = {
-    compact: false,
+    compact: true,
 }
 
 const obfuscator = require('javascript-obfuscator')
