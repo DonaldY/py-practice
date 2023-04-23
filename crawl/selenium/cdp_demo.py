@@ -1,6 +1,6 @@
 from selenium import webdriver
 from selenium.webdriver import ChromeOptions
-from selenium.webdriver.support.wait import WebDriverWait
+import time
 
 try:
     option = ChromeOptions()
@@ -12,7 +12,9 @@ try:
     browser.execute_cdp_cmd('Page.addScriptToEvaluateOnNewDocument', {
         'source': 'Object.defineProperty(navigator, "webdriver", {get: () => undefined})'
     })
+
     browser.get('https://bot.sannysoft.com/')
-    wait = WebDriverWait(browser, 1000)
+    time.sleep(100) # 等待 100s
+
 finally:
     browser.close()
