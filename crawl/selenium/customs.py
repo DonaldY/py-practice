@@ -12,11 +12,10 @@ browser = webdriver.Chrome(options=option)
 wait = WebDriverWait(browser, 10)         # 隐式等待：等待 10 秒
 browser.get('http://credit.customs.gov.cn/ccppwebserver/pages/ccpp/html/declCompany.html')
 
-# elements = browser.find_element(By.CSS_SELECTOR, '#tableDate > tbody')
+elements = browser.find_element(By.CLASS_NAME, '#tableDate > tbody')
 # print('all : '.format(elements))
 
 element = browser.find_element(By.XPATH, '#tableDate > tbody')
-print('all : '.format(element))
 
 
 
