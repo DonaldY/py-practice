@@ -1,6 +1,7 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver import Chrome, ChromeOptions
+import re
 
 option = ChromeOptions()
 option.add_argument('--headless')             # 设置无头模式
@@ -17,6 +18,7 @@ try:
     ele_tds = s_element.find_elements(By.CSS_SELECTOR, 'td')
     print(len(ele_tds))
 
+    print("===============> 行记录")
     for td in ele_tds:
         ele_tt = td.find_elements(By.CSS_SELECTOR, 'img')
         ele_len = len(ele_tt)
@@ -24,6 +26,22 @@ try:
             print('1: ' + td.text)
         else:
             print('2: ' + ele_tt[0].get_attribute('src'))
+
+    print("===============> 分页信息，提取页数：")
+    page_ele = browser.find_element(By.CSS_SELECTOR, '#ID_pagination > td:nth-child(2)')
+    print(page_ele.text)
+    regex = r"第(\d+)页"
+    match = re.search(regex, page_ele.text)
+    num = 100000
+    if match:
+        num = int(match.group(1))
+        print(num)  # 输出 1
+    else:
+        print("未匹配到任何数字")
+
+    print("===============> 点击下一页")
+    if num < 1000:
+        print("可以点击下一页")
 
 finally:
     browser.close()
