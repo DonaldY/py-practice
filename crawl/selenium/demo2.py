@@ -1,14 +1,29 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver import Chrome, ChromeOptions
 
-browser = webdriver.Chrome()
+option = ChromeOptions()
+option.add_argument('--headless')             # 设置无头模式
+browser = webdriver.Chrome(options=option)
 try:
     browser.get('file:///Users/yangyf/Downloads/demo.html')
-    print(browser.current_url)    # 打印 url
-    print(browser.get_cookies())  # 打印 cookies
-    print(browser.page_source)    # 打印 页面源码
+    element = browser.find_element(By.ID, 'tableDate').text
+    elements = browser.find_elements(By.CSS_SELECTOR, '#tableDate > tbody > tr')
+    print(len(elements))    # 长度
+    print(elements[0].text)  # 文本
+    s_element = elements[0]
+    print(s_element.get_attribute('ondblclick'))  # 拿取标签中的元素
+
+    ele_tds = s_element.find_elements(By.CSS_SELECTOR, 'td')
+    print(len(ele_tds))
+
+    for td in ele_tds:
+        ele_tt = td.find_elements(By.CSS_SELECTOR, 'img')
+        ele_len = len(ele_tt)
+        if ele_len == 0:
+            print('1: ' + td.text)
+        else:
+            print('2: ' + ele_tt[0].get_attribute('src'))
+
 finally:
     browser.close()
