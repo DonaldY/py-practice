@@ -45,6 +45,5 @@ try:
         next_btn = browser.find_element(By.CSS_SELECTOR, '#ID_pagination > td:nth-child(5)')
         next_btn.click()
 
-
 finally:
     browser.close()
