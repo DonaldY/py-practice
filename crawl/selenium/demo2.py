@@ -6,7 +6,9 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 browser = webdriver.Chrome()
 try:
-    browser.get('file:///Users/yangyf/Documents/Code/python/py-practice/crawl/selenium/demo.html')
-
+    browser.get('file:///Users/yangyf/Downloads/demo.html')
+    print(browser.current_url)    # 打印 url
+    print(browser.get_cookies())  # 打印 cookies
+    print(browser.page_source)    # 打印 页面源码
 finally:
     browser.close()
