@@ -9,14 +9,16 @@ option = ChromeOptions()
 option.add_experimental_option("debuggerAddress", "127.0.0.1:9222")
 browser = webdriver.Chrome(options=option)
 
-wait = WebDriverWait(browser, 10)         # 隐式等待：等待 10 秒
 browser.get('http://credit.customs.gov.cn/ccppwebserver/pages/ccpp/html/declCompany.html')
+browser.delete_all_cookies()
 
-elements = browser.find_element(By.CLASS_NAME, '#tableDate > tbody')
-# print('all : '.format(elements))
+time.sleep(10)
+script = "document.getElementById('hasNextHref').click();"
+browser.execute_script(script)
+next_btn = browser.find_element(By.ID, 'hasNextHref')
+next_btn.click()
 
-element = browser.find_element(By.XPATH, '#tableDate > tbody')
 
+print("click next page")
 
-
-time.sleep(100) # 等待 100s
+time.sleep(100)

@@ -2,9 +2,10 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver import Chrome, ChromeOptions
 import re
+import time
 
 option = ChromeOptions()
-option.add_argument('--headless')             # 设置无头模式
+# option.add_argument('--headless')             # 设置无头模式
 browser = webdriver.Chrome(options=option)
 try:
     browser.get('file:///Users/yangyf/Downloads/demo.html')
@@ -42,8 +43,17 @@ try:
     print("===============> 点击下一页")
     if num < 1000:
         print("可以点击下一页")
-        next_btn = browser.find_element(By.CSS_SELECTOR, '#ID_pagination > td:nth-child(5)')
+        # input_btn = browser.find_element(By.ID, 'ID_pageNo')
+        # input_btn.send_keys("2")
+        script = "document.getElementById('ID_pageNo').value = '2'"
+        browser.execute_script(script)
+        next_btn = browser.find_element(By.ID, 'hasNextHref')
         next_btn.click()
+
+        # next_btn = browser.find_element(By.CSS_SELECTOR, '#ID_pagination > td:nth-child(5)')
+        # next_btn.click()
+
+    time.sleep(100)
 
 finally:
     browser.close()
