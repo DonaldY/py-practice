@@ -42,6 +42,9 @@ try:
     print("===============> 点击下一页")
     if num < 1000:
         print("可以点击下一页")
+        next_btn = browser.find_element(By.CSS_SELECTOR, '#ID_pagination > td:nth-child(5)')
+        next_btn.click()
+
 
 finally:
     browser.close()
