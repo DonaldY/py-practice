@@ -45,8 +45,8 @@ try:
         print("可以点击下一页")
         # input_btn = browser.find_element(By.ID, 'ID_pageNo')
         # input_btn.send_keys("2")
-        script = "document.getElementById('ID_pageNo').value = '2'"
-        browser.execute_script(script)
+        # script = "document.getElementById('ID_pageNo').value = '2'"
+        # browser.execute_script(script)
         next_btn = browser.find_element(By.ID, 'hasNextHref')
         next_btn.click()
 
