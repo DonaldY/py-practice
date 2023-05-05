@@ -12,12 +12,18 @@ browser = webdriver.Chrome(options=option)
 browser.get('http://credit.customs.gov.cn/ccppwebserver/pages/ccpp/html/declCompany.html')
 browser.delete_all_cookies()
 
-time.sleep(30)
+time.sleep(10)
 
 # 不顶用
 # 还是会报：没有符合条件的数据
-next_btn = browser.find_element(By.CSS_SELECTOR, '#ID_pagination > td:nth-child(5)')
+next_btn = browser.find_element(By.ID, 'hasNextHref')
 # next_btn.click()
+
+webdriver.ActionChains(browser).move_to_element(next_btn).perform()
+
+print("已经移动到：" + str(next_btn))
+
+time.sleep(1)
 
 webdriver.ActionChains(browser).move_to_element(next_btn).click(next_btn).perform()
 
