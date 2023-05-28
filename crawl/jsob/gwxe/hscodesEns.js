@@ -63,3 +63,22 @@ function JZ0yvmdXOEuxBWV7yKCupBaRPxsmnotyEo2kEXaqhROw0Ze7v1vAr7eciZHxxpAep1cKk0r
     gtoKey = _0x190a26[_0x3e6b('‮d8', 'xDuo')]($, _0x190a26[_0x3e6b('‮d9', 'd6MX')](_0x190a26[_0x3e6b('‫da', 'Dlbd')], ECharts_webmaster_baidu_hmt_C6D4E_5F3G1_H2I0J_KLMNO_PQRSTU_powerful))[_0x3e6b('‫db', 'd^O^')]();
     gtokay = _0x190a26[_0x3e6b('‫dc', 'hJP8')](suy1IQQXaRRYk75dha21cu3mlis9BGmZQfXrB6NOrSOeUblzKu9SJxRc80pm0x2cOSYtQzmnk8WcaTs20rdnWwklQmVlc6fvlIa, _0x58a72b);
 }
+
+// 生成逻辑如下：
+function ch(_0x1eca49) {
+    var _0x3b21fc = {
+        'wWZGP': function(_0x5259a4, _0x60f552) {
+            return _0x5259a4(_0x60f552);
+        },
+        'fDwNr': function(_0x5a2150, _0x41e87e) {
+            return _0x5a2150(_0x41e87e);
+        },
+        'ZYIAd': function(_0x142ef0, _0xdb9e9d) {
+            return _0x142ef0 + _0xdb9e9d;
+        },
+        'UuMfe': _0x3e6b('‮150', '7w&L')
+    };
+    var _0x5b9c30 = _0x3b21fc[_0x3e6b('‫151', '#pAV')](RYZPLWmlNFomnwiiVOXZnFfxEtosUSCPnLPNPdQRBzvtEXjJWifpwXCCyVxUJJVQVImcfzsMgVxXjnzmmUxqULOhfpelKpY, _0x1eca49);
+    var _0x5b9c30 = _0x3b21fc[_0x3e6b('‮152', 'Oq%B')](base64Encode, _0x5b9c30);
+    _0x3b21fc[_0x3e6b('‮153', 'sEd6')]($, _0x3b21fc[_0x3e6b('‮154', 'X&pL')](_0x3b21fc[_0x3e6b('‫155', 'FvKr')], ECharts_webmaster_baidu_hmt_C6D4E_5F3G1_H2I0J_KLMNO_PQRSTU_powerful))[_0x3e6b('‮156', '3#Do')](_0x5b9c30);
+}
