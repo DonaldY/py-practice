@@ -8,7 +8,7 @@ option = ChromeOptions()
 # option.add_argument('--headless')             # 设置无头模式
 browser = webdriver.Chrome(options=option)
 try:
-    browser.get('file:///Users/yangyf/Downloads/demo.html')
+    browser.get('file:///Users/yangyf/Downloads/500.html')
     element = browser.find_element(By.ID, 'tableDate').text
     elements = browser.find_elements(By.CSS_SELECTOR, '#tableDate > tbody > tr')
     print(len(elements))    # 长度

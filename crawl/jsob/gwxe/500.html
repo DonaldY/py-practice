@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>System Error</title>
+    <meta name="robots" content="noindex,nofollow" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <style>
+        /* Base */
+        body {
+            color: #333;
+            font: 14px Verdana, "Helvetica Neue", helvetica, Arial, 'Microsoft YaHei', sans-serif;
+            margin: 0;
+            padding: 0 20px 20px;
+            word-break: break-word;
+        }
+
+        h1 {
+            margin: 10px 0 0;
+            font-size: 28px;
+            font-weight: 500;
+            line-height: 32px;
+        }
+
+        h2 {
+            color: #4288ce;
+            font-weight: 400;
+            padding: 6px 0;
+            margin: 6px 0 0;
+            font-size: 18px;
+            border-bottom: 1px solid #eee;
+        }
+
+        h3.subheading {
+            color: #4288ce;
+            margin: 6px 0 0;
+            font-weight: 400;
+        }
+
+        h3 {
+            margin: 12px;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        abbr {
+            cursor: help;
+            text-decoration: underline;
+            text-decoration-style: dotted;
+        }
+
+        a {
+            color: #868686;
+            cursor: pointer;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .line-error {
+            background: #f8cbcb;
+        }
+
+        .echo table {
+            width: 100%;
+        }
+
+        .echo pre {
+            padding: 16px;
+            overflow: auto;
+            font-size: 85%;
+            line-height: 1.45;
+            background-color: #f7f7f7;
+            border: 0;
+            border-radius: 3px;
+            font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
+        }
+
+        .echo pre>pre {
+            padding: 0;
+            margin: 0;
+        }
+
+        /* Layout */
+        .col-md-3 {
+            width: 25%;
+        }
+
+        .col-md-9 {
+            width: 75%;
+        }
+
+        [class^="col-md-"] {
+            float: left;
+        }
+
+        .clearfix {
+            clear: both;
+        }
+
+        @media only screen and (min-device-width : 375px) and (max-device-width : 667px) {
+
+            .col-md-3,
+            .col-md-9 {
+                width: 100%;
+            }
+        }
+
+        /* Exception Info */
+        .exception {
+            margin-top: 20px;
+        }
+
+        .exception .message {
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-bottom: 0 none;
+            line-height: 18px;
+            font-size: 16px;
+            border-top-left-radius: 4px;
+            border-top-right-radius: 4px;
+            font-family: Consolas, "Liberation Mono", Courier, Verdana, "微软雅黑";
+        }
+
+        .exception .code {
+            float: left;
+            text-align: center;
+            color: #fff;
+            margin-right: 12px;
+            padding: 16px;
+            border-radius: 4px;
+            background: #999;
+        }
+
+        .exception .source-code {
+            padding: 6px;
+            border: 1px solid #ddd;
+
+            background: #f9f9f9;
+            overflow-x: auto;
+
+        }
+
+        .exception .source-code pre {
+            margin: 0;
+        }
+
+        .exception .source-code pre ol {
+            margin: 0;
+            color: #4288ce;
+            display: inline-block;
+            min-width: 100%;
+            box-sizing: border-box;
+            font-size: 14px;
+            font-family: "Century Gothic", Consolas, "Liberation Mono", Courier, Verdana;
+            padding-left: 56px;
+        }
+
+        .exception .source-code pre li {
+            border-left: 1px solid #ddd;
+            height: 18px;
+            line-height: 18px;
+        }
+
+        .exception .source-code pre code {
+            color: #333;
+            height: 100%;
+            display: inline-block;
+            border-left: 1px solid #fff;
+            font-size: 14px;
+            font-family: Consolas, "Liberation Mono", Courier, Verdana, "微软雅黑";
+        }
+
+        .exception .trace {
+            padding: 6px;
+            border: 1px solid #ddd;
+            border-top: 0 none;
+            line-height: 16px;
+            font-size: 14px;
+            font-family: Consolas, "Liberation Mono", Courier, Verdana, "微软雅黑";
+        }
+
+        .exception .trace ol {
+            margin: 12px;
+        }
+
+        .exception .trace ol li {
+            padding: 2px 4px;
+        }
+
+        .exception div:last-child {
+            border-bottom-left-radius: 4px;
+            border-bottom-right-radius: 4px;
+        }
+
+        /* Exception Variables */
+        .exception-var table {
+            width: 100%;
+            margin: 12px 0;
+            box-sizing: border-box;
+            table-layout: fixed;
+            word-wrap: break-word;
+        }
+
+        .exception-var table caption {
+            text-align: left;
+            font-size: 16px;
+            font-weight: bold;
+            padding: 6px 0;
+        }
+
+        .exception-var table caption small {
+            font-weight: 300;
+            display: inline-block;
+            margin-left: 10px;
+            color: #ccc;
+        }
+
+        .exception-var table tbody {
+            font-size: 13px;
+            font-family: Consolas, "Liberation Mono", Courier, "微软雅黑";
+        }
+
+        .exception-var table td {
+            padding: 0 6px;
+            vertical-align: top;
+            word-break: break-all;
+        }
+
+        .exception-var table td:first-child {
+            width: 28%;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .exception-var table td pre {
+            margin: 0;
+        }
+
+        /* Copyright Info */
+        .copyright {
+            margin-top: 24px;
+            padding: 12px 0;
+            border-top: 1px solid #eee;
+        }
+
+        /* SPAN elements with the classes below are added by prettyprint. */
+        pre.prettyprint .pln {
+            color: #000
+        }
+
+        /* plain text */
+        pre.prettyprint .str {
+            color: #080
+        }
+
+        /* string content */
+        pre.prettyprint .kwd {
+            color: #008
+        }
+
+        /* a keyword */
+        pre.prettyprint .com {
+            color: #800
+        }
+
+        /* a comment */
+        pre.prettyprint .typ {
+            color: #606
+        }
+
+        /* a type name */
+        pre.prettyprint .lit {
+            color: #066
+        }
+
+        /* a literal value */
+        /* punctuation, lisp open bracket, lisp close bracket */
+        pre.prettyprint .pun,
+        pre.prettyprint .opn,
+        pre.prettyprint .clo {
+            color: #660
+        }
+
+        pre.prettyprint .tag {
+            color: #008
+        }
+
+        /* a markup tag name */
+        pre.prettyprint .atn {
+            color: #606
+        }
+
+        /* a markup attribute name */
+        pre.prettyprint .atv {
+            color: #080
+        }
+
+        /* a markup attribute value */
+        pre.prettyprint .dec,
+        pre.prettyprint .var {
+            color: #606
+        }
+
+        /* a declaration; a variable name */
+        pre.prettyprint .fun {
+            color: red
+        }
+
+        /* a function name */
+    </style>
+</head>
+
+<body>
+<div class="echo">
+</div>
+<div class="exception">
+    <div class="message">
+
+        <div class="info">
+            <div>
+                <h2>[8]&nbsp;<abbr title="think\exception\ErrorException">ErrorException</abbr> in <a class="toggle"
+                                                                                                      title="/www/wwwroot/api.guanwuxiaoer.com/application/api/controller/Hscode.php line 639">Hscode.php
+                    line 639</a></h2>
+            </div>
+            <div>
+                <h1>未定义数组下标: 3</h1>
+            </div>
+        </div>
+
+    </div>
+    <div class="source-code">
+            <pre class="prettyprint lang-php"><ol start="630"><li class="line-630"><code>            //第二部分是前端页面监控用户动作行为，实时生成的动态加密字符串（是token和sid）。
+</code></li><li class="line-631"><code>            //这两部分字符串使用了下划线&quot;_&quot;连接起来。
+</code></li><li class="line-632"><code>            //为防止爬虫，这两部分字符串验证成功后得到的用户信息对应上才算真正的验证通过。
+</code></li><li class="line-633"><code>            $decryptedList = explode('_', $decrypted);
+</code></li><li class="line-634"><code>            $userHashKey = $decryptedList[0];//第一部分字符串
+</code></li><li class="line-635"><code>
+</code></li><li class="line-636"><code>            if(isset($decryptedList[2]) &amp;&amp; !empty($decryptedList[2])){
+</code></li><li class="line-637"><code>                //有用户信息
+</code></li><li class="line-638"><code>                //验证第二部分字符串。
+</code></li><li class="line-639"><code>                $tokenAndSidStr  = strrev($decryptedList[2].'_'.$decryptedList[3]);
+</code></li><li class="line-640"><code>                $decodeArr = $this-&gt;decodeTokenAndSid($tokenAndSidStr);
+</code></li><li class="line-641"><code>                $this-&gt;uid = strrev($decryptedList[1]);
+</code></li><li class="line-642"><code>                if($decodeArr){
+</code></li><li class="line-643"><code>                    $this-&gt;token = $decodeArr['token'];
+</code></li><li class="line-644"><code>                    $this-&gt;sid = $decodeArr['sid'];
+</code></li><li class="line-645"><code>                }else{
+</code></li><li class="line-646"><code>                    $result['code'] = 500;
+</code></li><li class="line-647"><code>                    $result['msg'] = 'Permission denied';
+</code></li><li class="line-648"><code>                    $result['err'] = -1;
+</code></li></ol></pre>
+    </div>
+    <div class="trace">
+        <h2>Call Stack</h2>
+        <ol>
+            <li>in <a class="toggle"
+                      title="/www/wwwroot/api.guanwuxiaoer.com/application/api/controller/Hscode.php line 639">Hscode.php
+                line 639</a></li>
+            <li>
+                at <abbr title="think\Error">Error</abbr>::appError(8, 'Undefined offset: 3', '<a class="toggle"
+                                                                                                  title="/www/wwwroot/api.guanwuxiaoer.com/application/api/controller/Hscode.php">/www/wwwroot/api.gua...</a>',
+                639, ['finalType' => <em>false</em>, 'md5Token' => '<a class="toggle"
+                                                                       title="250f5ee48a709cca084f12341f7286d1">250f5ee48a709cca084f...</a>', 'redis' =>
+                <em>object</em>(<abbr title="Redis\RedisClient">RedisClient</abbr>), ...]) in <a class="toggle"
+                                                                                                 title="/www/wwwroot/api.guanwuxiaoer.com/application/api/controller/Hscode.php line 639">Hscode.php
+                line 639</a> </li>
+            <li>
+                at <abbr title="app\api\controller\Hscode">Hscode</abbr>->checkToken() in <a class="toggle"
+                                                                                             title="/www/wwwroot/api.guanwuxiaoer.com/application/api/controller/Hscode.php line 119">Hscode.php
+                line 119</a> </li>
+            <li>
+                at <abbr title="app\api\controller\Hscode">Hscode</abbr>->__construct() </li>
+            <li>
+                at <abbr title="ReflectionClass">ReflectionClass</abbr>->newInstanceArgs([]) in <a class="toggle"
+                                                                                                   title="/www/wwwroot/api.guanwuxiaoer.com/thinkphp/library/think/App.php line 359">App.php line
+                359</a> </li>
+            <li>
+                at <abbr title="think\App">App</abbr>::invokeClass('<a class="toggle"
+                                                                       title="app\api\controller\Hscode">app\api\controller\H...</a>') in <a class="toggle"
+                                                                                                                                             title="/www/wwwroot/api.guanwuxiaoer.com/thinkphp/library/think/Loader.php line 479">Loader.php
+                line 479</a> </li>
+            <li>
+                at <abbr title="think\Loader">Loader</abbr>::controller('hscode', 'controller', <em>false</em>,
+                'Error') in <a class="toggle"
+                               title="/www/wwwroot/api.guanwuxiaoer.com/thinkphp/library/think/App.php line 578">App.php line
+                578</a> </li>
+            <li>
+                at <abbr title="think\App">App</abbr>::module(['api', 'hscode', 'hsCodeSearch'], ['app_host' => '',
+                'app_debug' => <em>true</em>, 'app_trace' => <em>false</em>, ...], <em>true</em>) in <a
+                    class="toggle"
+                    title="/www/wwwroot/api.guanwuxiaoer.com/thinkphp/library/think/App.php line 456">App.php line
+                456</a> </li>
+            <li>
+                at <abbr title="think\App">App</abbr>::exec(['type' => 'module', 'module' => ['api', 'hscode',
+                'hsCodeSearch']], ['app_host' => '', 'app_debug' => <em>true</em>, 'app_trace' => <em>false</em>,
+                ...]) in <a class="toggle"
+                            title="/www/wwwroot/api.guanwuxiaoer.com/thinkphp/library/think/App.php line 139">App.php line
+                139</a> </li>
+            <li>
+                at <abbr title="think\App">App</abbr>::run() in <a class="toggle"
+                                                                   title="/www/wwwroot/api.guanwuxiaoer.com/thinkphp/start.php line 19">start.php line 19</a> </li>
+            <li>
+                at require('<a class="toggle"
+                               title="/www/wwwroot/api.guanwuxiaoer.com/thinkphp/start.php">/www/wwwroot/api.gua...</a>') in <a
+                    class="toggle" title="/www/wwwroot/api.guanwuxiaoer.com/public/index.php line 17">index.php line
+                17</a> </li>
+        </ol>
+    </div>
+</div>
+
+
+<div class="exception-var">
+    <h2>Environment Variables</h2>
+    <div>
+        <div class="clearfix">
+            <div class="col-md-3"><strong>GET Data</strong></div>
+            <div class="col-md-9"><small>empty</small></div>
+        </div>
+    </div>
+    <div>
+        <h3 class="subheading">POST Data</h3>
+        <div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>x</strong></div>
+                <div class="col-md-9"><small>
+                    UnB5V2VJT01pWHBXL0JZV281QUgwdFFvSUY0R1RWR1UwUXMzblRVYUltd1Rkd2tBZWp0NVMwY3ArRWFncXVXTXdEMThMRHZiK3pFUjJaeUhhVnV0QUhvYjhsQWMwUkp5cENNZUtPMDFwTlpLTU02QlNYYXVsR3UzbWd2aGZzcFQveGV3eFM3SlZ4QjRCSDhENFZsSWxnbWxPMURaTi82SjF5dHpZYm5kamNLVVl1eUhYZ283N1ROR1hkU3Q3NHQwa1NweElzdnh6VzJaaTRCTmFxV3I3TlJFdTFiQzEvWU95ZDBmUUh3NTBlQXF6cWd5Y3dWU293QXBxNDkwUjgwSUhWV2U3Qkd0bkhtUWp5Q25oOW4wZDhjdWgvZytybHBYRUh1UThjNzlnMVMwWHRwSllvSWlZczIvemxKMk9JT01ZMXdMZHRGUXByaHpxemljQTRXYzJBPT0=                    </small>
+                </div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>key</strong></div>
+                <div class="col-md-9"><small>
+                    4010390000                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>is_expires</strong></div>
+                <div class="col-md-9"><small>
+                    true                    </small></div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <div class="clearfix">
+            <div class="col-md-3"><strong>Files</strong></div>
+            <div class="col-md-9"><small>empty</small></div>
+        </div>
+    </div>
+    <div>
+        <h3 class="subheading">Cookies</h3>
+        <div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>mu6O_306d_saltkey</strong></div>
+                <div class="col-md-9"><small>
+                    u47qGyy5                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>mu6O_306d_creditrule</strong></div>
+                <div class="col-md-9"><small>
+                    每天登录                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>Hm_lpvt_fd5afdcf9e5be520b5a33a47bda3d2c6</strong></div>
+                <div class="col-md-9"><small>
+                    1684293023                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>PHPSESSID</strong></div>
+                <div class="col-md-9"><small>
+                    djuk55kjir9l675tjh1c7i0c0d                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>mu6O_306d_sid</strong></div>
+                <div class="col-md-9"><small>
+                    qns4Im                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>Hm_lvt_fd5afdcf9e5be520b5a33a47bda3d2c6</strong></div>
+                <div class="col-md-9"><small>
+                    1684236537                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>mu6O_306d_lastact</strong></div>
+                <div class="col-md-9"><small>
+                    1684755644	index.php	                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>mu6O_306d_lastvisit</strong></div>
+                <div class="col-md-9"><small>
+                    1684287338                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>mu6O_306d_lip</strong></div>
+                <div class="col-md-9"><small>
+                    39.170.75.82,1684755644                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>mu6O_306d_creditnotice</strong></div>
+                <div class="col-md-9"><small>
+                    0D0D1D0D0D0D0D0D0D105359                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>mu6O_306d_ulastactivity</strong></div>
+                <div class="col-md-9"><small>
+                    cdd1BWLNjsBY0hmoUn42DimUAD25fwkJWVqX94s1jblvphYll89I                    </small></div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <div class="clearfix">
+            <div class="col-md-3"><strong>Session</strong></div>
+            <div class="col-md-9"><small>empty</small></div>
+        </div>
+    </div>
+    <div>
+        <h3 class="subheading">Server/Request Data</h3>
+        <div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>USER</strong></div>
+                <div class="col-md-9"><small>
+                    www                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>HOME</strong></div>
+                <div class="col-md-9"><small>
+                    /home/www                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>HTTP_CONTENT_LENGTH</strong></div>
+                <div class="col-md-9"><small>
+                    495                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>HTTP_CONNECTION</strong></div>
+                <div class="col-md-9"><small>
+                    keep-alive                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>HTTP_HOST</strong></div>
+                <div class="col-md-9"><small>
+                    api.guanwuxiaoer.com                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>HTTP_CONTENT_TYPE</strong></div>
+                <div class="col-md-9"><small>
+                    application/x-www-form-urlencoded; charset=UTF-8                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>HTTP_COOKIE</strong></div>
+                <div class="col-md-9"><small>
+                    mu6O_306d_saltkey=u47qGyy5;mu6O_306d_creditrule=%E6%AF%8F%E5%A4%A9%E7%99%BB%E5%BD%95;Hm_lpvt_fd5afdcf9e5be520b5a33a47bda3d2c6=1684293023;PHPSESSID=djuk55kjir9l675tjh1c7i0c0d;mu6O_306d_sid=qns4Im;Hm_lvt_fd5afdcf9e5be520b5a33a47bda3d2c6=1684236537;mu6O_306d_lastact=1684755644%09index.php%09;mu6O_306d_lastvisit=1684287338;mu6O_306d_lip=39.170.75.82%2C1684755644;mu6O_306d_creditnotice=0D0D1D0D0D0D0D0D0D105359;mu6O_306d_ulastactivity=cdd1BWLNjsBY0hmoUn42DimUAD25fwkJWVqX94s1jblvphYll89I                    </small>
+                </div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>HTTP_PATH</strong></div>
+                <div class="col-md-9"><small>
+                    /api/hscode/hsCodeSearch                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>HTTP_METHOD</strong></div>
+                <div class="col-md-9"><small>
+                    POST                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>HTTP_AUTHORITY</strong></div>
+                <div class="col-md-9"><small>
+                    api.guanwuxiaoer.com                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>HTTP_SCHEME</strong></div>
+                <div class="col-md-9"><small>
+                    https                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>HTTP_USER_AGENT</strong></div>
+                <div class="col-md-9"><small>
+                    Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36                    </small>
+                </div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>HTTP_SEC_FETCH_SITE</strong></div>
+                <div class="col-md-9"><small>
+                    same-site                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>HTTP_SEC_FETCH_MODE</strong></div>
+                <div class="col-md-9"><small>
+                    cors                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>HTTP_SEC_FETCH_DEST</strong></div>
+                <div class="col-md-9"><small>
+                    empty                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>HTTP_SEC_CH_UA_PLATFORM</strong></div>
+                <div class="col-md-9"><small>
+                    &quot;macOS&quot;                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>HTTP_SEC_CH_UA_MOBILE</strong></div>
+                <div class="col-md-9"><small>
+                    ?0                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>HTTP_SEC_CH_UA</strong></div>
+                <div class="col-md-9"><small>
+                    &quot;Google Chrome&quot;;v=&quot;113&quot;, &quot;Chromium&quot;;v=&quot;113&quot;, &quot;Not-A.Brand&quot;;v=&quot;24&quot;                    </small>
+                </div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>HTTP_REFERER</strong></div>
+                <div class="col-md-9"><small>
+                    https://www.guanwuxiaoer.com/                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>HTTP_PRAGMA</strong></div>
+                <div class="col-md-9"><small>
+                    no-cache                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>HTTP_ORIGIN</strong></div>
+                <div class="col-md-9"><small>
+                    https://www.guanwuxiaoer.com                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>HTTP_CACHE_CONTROL</strong></div>
+                <div class="col-md-9"><small>
+                    no-cache                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>HTTP_ACCEPT_LANGUAGE</strong></div>
+                <div class="col-md-9"><small>
+                    h-CN,zh;q=0.9,en;q=0.8                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>HTTP_ACCEPT_ENCODING</strong></div>
+                <div class="col-md-9"><small>
+                    gzip, deflate, br                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>HTTP_ACCEPT</strong></div>
+                <div class="col-md-9"><small>
+                    */*                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>PATH_INFO</strong></div>
+                <div class="col-md-9"><small>
+                    /api/hscode/hsCodeSearch                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>REDIRECT_STATUS</strong></div>
+                <div class="col-md-9"><small>
+                    200                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>SERVER_NAME</strong></div>
+                <div class="col-md-9"><small>
+                    api.guanwuxiaoer.com                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>SERVER_PORT</strong></div>
+                <div class="col-md-9"><small>
+                    443                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>SERVER_ADDR</strong></div>
+                <div class="col-md-9"><small>
+                    172.16.3.170                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>REMOTE_PORT</strong></div>
+                <div class="col-md-9"><small>
+                    51297                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>REMOTE_ADDR</strong></div>
+                <div class="col-md-9"><small>
+                    183.128.155.25                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>SERVER_SOFTWARE</strong></div>
+                <div class="col-md-9"><small>
+                    nginx/1.15.10                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>GATEWAY_INTERFACE</strong></div>
+                <div class="col-md-9"><small>
+                    CGI/1.1                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>HTTPS</strong></div>
+                <div class="col-md-9"><small>
+                    on                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>REQUEST_SCHEME</strong></div>
+                <div class="col-md-9"><small>
+                    https                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>SERVER_PROTOCOL</strong></div>
+                <div class="col-md-9"><small>
+                    HTTP/1.1                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>DOCUMENT_ROOT</strong></div>
+                <div class="col-md-9"><small>
+                    /www/wwwroot/api.guanwuxiaoer.com/public                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>DOCUMENT_URI</strong></div>
+                <div class="col-md-9"><small>
+                    /index.php                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>REQUEST_URI</strong></div>
+                <div class="col-md-9"><small>
+                    /api/hscode/hsCodeSearch                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>SCRIPT_NAME</strong></div>
+                <div class="col-md-9"><small>
+                    /index.php                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>CONTENT_LENGTH</strong></div>
+                <div class="col-md-9"><small>
+                    495                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>CONTENT_TYPE</strong></div>
+                <div class="col-md-9"><small>
+                    application/x-www-form-urlencoded; charset=UTF-8                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>REQUEST_METHOD</strong></div>
+                <div class="col-md-9"><small>
+                    POST                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>QUERY_STRING</strong></div>
+                <div class="col-md-9"><small>
+                    s=/api/hscode/hsCodeSearch                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>SCRIPT_FILENAME</strong></div>
+                <div class="col-md-9"><small>
+                    /www/wwwroot/api.guanwuxiaoer.com/public/index.php                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>FCGI_ROLE</strong></div>
+                <div class="col-md-9"><small>
+                    RESPONDER                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>PHP_SELF</strong></div>
+                <div class="col-md-9"><small>
+                    /index.php                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>REQUEST_TIME_FLOAT</strong></div>
+                <div class="col-md-9"><small>
+                    1685292982.9078                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>REQUEST_TIME</strong></div>
+                <div class="col-md-9"><small>
+                    1685292982                    </small></div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <div class="clearfix">
+            <div class="col-md-3"><strong>Environment Variables</strong></div>
+            <div class="col-md-9"><small>empty</small></div>
+        </div>
+    </div>
+    <div>
+        <h3 class="subheading">ThinkPHP Constants</h3>
+        <div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>APP_PATH</strong></div>
+                <div class="col-md-9"><small>
+                    /www/wwwroot/api.guanwuxiaoer.com/public/../application/                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>THINK_VERSION</strong></div>
+                <div class="col-md-9"><small>
+                    5.0.22                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>THINK_START_TIME</strong></div>
+                <div class="col-md-9"><small>
+                    1685292982.9084                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>THINK_START_MEM</strong></div>
+                <div class="col-md-9"><small>
+                    414216                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>EXT</strong></div>
+                <div class="col-md-9"><small>
+                    .php                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>DS</strong></div>
+                <div class="col-md-9"><small>
+                    /                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>THINK_PATH</strong></div>
+                <div class="col-md-9"><small>
+                    /www/wwwroot/api.guanwuxiaoer.com/thinkphp/                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>LIB_PATH</strong></div>
+                <div class="col-md-9"><small>
+                    /www/wwwroot/api.guanwuxiaoer.com/thinkphp/library/                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>CORE_PATH</strong></div>
+                <div class="col-md-9"><small>
+                    /www/wwwroot/api.guanwuxiaoer.com/thinkphp/library/think/                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>TRAIT_PATH</strong></div>
+                <div class="col-md-9"><small>
+                    /www/wwwroot/api.guanwuxiaoer.com/thinkphp/library/traits/                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>ROOT_PATH</strong></div>
+                <div class="col-md-9"><small>
+                    /www/wwwroot/api.guanwuxiaoer.com/                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>EXTEND_PATH</strong></div>
+                <div class="col-md-9"><small>
+                    /www/wwwroot/api.guanwuxiaoer.com/extend/                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>VENDOR_PATH</strong></div>
+                <div class="col-md-9"><small>
+                    /www/wwwroot/api.guanwuxiaoer.com/vendor/                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>RUNTIME_PATH</strong></div>
+                <div class="col-md-9"><small>
+                    /www/wwwroot/api.guanwuxiaoer.com/runtime/                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>LOG_PATH</strong></div>
+                <div class="col-md-9"><small>
+                    /www/wwwroot/api.guanwuxiaoer.com/runtime/log/                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>CACHE_PATH</strong></div>
+                <div class="col-md-9"><small>
+                    /www/wwwroot/api.guanwuxiaoer.com/runtime/cache/                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>TEMP_PATH</strong></div>
+                <div class="col-md-9"><small>
+                    /www/wwwroot/api.guanwuxiaoer.com/runtime/temp/                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>CONF_PATH</strong></div>
+                <div class="col-md-9"><small>
+                    /www/wwwroot/api.guanwuxiaoer.com/public/../application/                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>CONF_EXT</strong></div>
+                <div class="col-md-9"><small>
+                    .php                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>ENV_PREFIX</strong></div>
+                <div class="col-md-9"><small>
+                    PHP_                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>IS_CLI</strong></div>
+                <div class="col-md-9"><small>
+                    false                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>IS_WIN</strong></div>
+                <div class="col-md-9"><small>
+                    false                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>FILTER_VALIDATE_BOOL</strong></div>
+                <div class="col-md-9"><small>
+                    258                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>OpenApi\UNDEFINED</strong></div>
+                <div class="col-md-9"><small>
+                    @OA\Generator::UNDEFINED🙈                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>OpenApi\Annotations\UNDEFINED</strong></div>
+                <div class="col-md-9"><small>
+                    @OA\Generator::UNDEFINED🙈                    </small></div>
+            </div>
+            <div class="clearfix">
+                <div class="col-md-3"><strong>OpenApi\Processors\UNDEFINED</strong></div>
+                <div class="col-md-9"><small>
+                    @OA\Generator::UNDEFINED🙈                    </small></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="copyright"></div>
+<script>
+    var LINE = 639;
+
+    function $(selector, node){
+        var elements;
+
+        node = node || document;
+        if(document.querySelectorAll){
+            elements = node.querySelectorAll(selector);
+        } else {
+            switch(selector.substr(0, 1)){
+                case '#':
+                    elements = [node.getElementById(selector.substr(1))];
+                    break;
+                case '.':
+                    if(document.getElementsByClassName){
+                        elements = node.getElementsByClassName(selector.substr(1));
+                    } else {
+                        elements = get_elements_by_class(selector.substr(1), node);
+                    }
+                    break;
+                default:
+                    elements = node.getElementsByTagName();
+            }
+        }
+        return elements;
+
+        function get_elements_by_class(search_class, node, tag) {
+            var elements = [], eles,
+                pattern  = new RegExp('(^|\\s)' + search_class + '(\\s|$)');
+
+            node = node || document;
+            tag  = tag  || '*';
+
+            eles = node.getElementsByTagName(tag);
+            for(var i = 0; i < eles.length; i++) {
+                if(pattern.test(eles[i].className)) {
+                    elements.push(eles[i])
+                }
+            }
+
+            return elements;
+        }
+    }
+
+    $.getScript = function(src, func){
+        var script = document.createElement('script');
+
+        script.async  = 'async';
+        script.src    = src;
+        script.onload = func || function(){};
+
+        $('head')[0].appendChild(script);
+    }
+
+    ;(function(){
+        var files = $('.toggle');
+        var ol    = $('ol', $('.prettyprint')[0]);
+        var li    = $('li', ol[0]);
+
+        // 短路径和长路径变换
+        for(var i = 0; i < files.length; i++){
+            files[i].ondblclick = function(){
+                var title = this.title;
+
+                this.title = this.innerHTML;
+                this.innerHTML = title;
+            }
+        }
+
+        // 设置出错行
+        var err_line = $('.line-' + LINE, ol[0])[0];
+        err_line.className = err_line.className + ' line-error';
+
+        $.getScript('//cdn.bootcss.com/prettify/r298/prettify.min.js', function(){
+            prettyPrint();
+
+            // 解决Firefox浏览器一个很诡异的问题
+            // 当代码高亮后，ol的行号莫名其妙的错位
+            // 但是只要刷新li里面的html重新渲染就没有问题了
+            if(window.navigator.userAgent.indexOf('Firefox') >= 0){
+                ol[0].innerHTML = ol[0].innerHTML;
+            }
+        });
+
+    })();
+</script>
+</body>
+
+</html>
