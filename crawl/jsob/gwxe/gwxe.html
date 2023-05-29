@@ -1,0 +1,3669 @@
+<html><head>
+    <title>海关商品编码HS查询-关务小二</title>
+    <meta name="keywords" content="海关编码查询,进出口关税查询,商品编码查询,申报要素查询,HS查询,HSCODE查询,海关商品编码查询">
+    <meta name="description" content="关务小二(www.guanwuxiaoer.com)提供准确及时的海关商品编码查询、申报要素查询及进出口税率查询，支持HS编码对比和变更记录动态通知订阅。">
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <meta name="renderer" content="webkit">
+    <link rel="alternate" media="only screen and(max-width: 640px)" href="https://www.guanwuxiaoer.com/hscode.php?mod=m">
+
+    <link rel="stylesheet" href="/static/layui/css/layui.css">
+    <link rel="stylesheet" href="/static/hscode/css/index.css">
+    <script src="https://hm.baidu.com/hm.js?fd5afdcf9e5be520b5a33a47bda3d2c6"></script><script src="https://hm.baidu.com/hm.js?fd5afdcf9e5be520b5a33a47bda3d2c6"></script><script src="/static/layui/layui.js"></script>
+    <script src="/static/taxes/js/jquery-1.11.3.min.js"></script>
+    <script src="/static/js/qrcode.min.js"></script>
+    <script src="/static/js/jquery.cookie.min.js"></script>
+    <script src="/static/js/jen.js"></script>
+    <script src="/static/echart5/package/dist/echarts.min.js"></script>
+    <style>
+        body{font-family: "Microsoft YaHei";}
+        input {font-family: "Microsoft YaHei";}
+        .layui-layer-content{padding:15px;}
+        table{table-layout:fixed;}
+        table td{word-wrap:break-word;text-overflow:ellipsis;}
+        .showcontent{cursor:pointer;color:#3388ff;}
+        .conventationTaxes{color:#3388ff;cursor:pointer}
+        .conventationTaxes:hover{text-decoration:underline !important;color:#3388ff;}
+        .layui-badge{position: relative;display: inline-block;padding:6px;font-size: 12px;text-align: center;background-color: #FF5722;color: #fff;border-radius: 2px;}
+        .layui-table td, .layui-table th {
+            position: relative;
+            padding: 9px 10px;
+            min-height: 20px;
+            line-height: 20px;
+            font-size: 14px;
+        }
+        .showSbysCase{cursor:pointer;color:#1E9FFF;}
+        .layui-layer-title{background-color: #F8F8F8 !important;}
+        .sbysCaseTitle{font-weight:bold !important;}
+        .searchSbysBtn{
+            display: flex;
+            padding: 7px;
+            width: 135px;
+            margin: 0px 10px;
+            justify-content:center;
+            align-items:center;
+            border-radius: 5px;
+            color: white;
+        }
+        .tenBtn{background:#1E9FFF;cursor: pointer;}
+        .eightBtn{background:#ffb800;cursor: pointer;}
+        .disableBtn{
+            border:1px solid #eee;
+            background-color: #FBFBFB!important;
+            color: #d2d2d2!important;
+            cursor: not-allowed!important;
+        }
+        #sbysCaseFootTips{
+            color:#375cb0;
+            font-size:13px;
+            position: absolute;
+            bottom: 85px;
+        }
+        #sbysCasePage{
+            position: absolute;
+            bottom: 20px;
+            width:95%;
+            text-align:center;
+        }
+        .tipsBySbysCase{width:13px;margin-bottom: 1px;margin-right:3px;}
+        .datatips{color:#ff7728;}
+        .codeStr{color:#1E9FFF;}
+        .sbysCaseContent{height:480px;overflow: auto}
+        .expiresCode{color:grey}
+        .codeStyle{
+            color:#2e82ff
+        }
+        #hsCodeDialog .layui-table,#ImportTaxesWindow .layui-table {
+            background-color: transparent;
+        }
+        .codeSpec span{
+            display: inline-block;
+            background: #898989;
+            color: #fff;
+            width: 20px;
+            height: 17px;
+            text-align: center;
+            border-radius: 3px;
+            font-size: 12px;
+            line-height: 17px;
+            margin-right: 3px;
+        }
+        #tooltip{
+            font-size: 12px;
+            background: rgba(255, 255, 255,.85);
+            border: 1px #1E9FFF solid;
+            padding: 5px;
+            color: #333;
+        }
+        #memorySearchBox {
+            background: #fff;
+            position: absolute;
+            width: 675px;
+            left: 0;
+            top: 64px;
+            border: 1px #38f solid;
+            box-sizing: border-box;
+            z-index: 10;
+            max-height: 322px;
+            overflow-y: auto;
+        }
+        #memorySearchBox div.item{
+            line-height: 30px;
+            font-size: 14px;
+            padding: 5px 10px;
+            cursor: pointer;
+            position: relative;
+            text-align:left;
+        }
+        #memorySearchBox div.item:hover{
+            background-color: #2e82ff;
+            color: #fff;
+        }
+        #memorySearchBox div.item .code{
+            padding-left: 10px;
+            font-size: 16px;
+            display: block;
+        }
+        #memorySearchBox .item .del{
+            position: absolute;
+            right: 10px;
+            display: none;
+            top: 5px;
+            font-size: 20px;
+            z-index: 10;
+            padding: 0 10px;
+        }
+        #memorySearchBox .item:hover .del{
+            display: block;
+        }
+        #memorySearchBox .delAll{
+            padding:3px 10px 5px 10px; cursor:pointer;display:inline-block;color: #999;
+        }
+        #memorySearchBox .delAll:hover{
+            color:crimson;
+        }
+        /*重置CSS*/
+        .medicalSearchInput{
+            width: 826px;
+            display:flex;
+        }
+        .medicalSearchInput .searchMore,.medicalSearchInput .searchSubmit2{
+            position: absolute;
+            left: auto;
+        }
+        .medicalSearchInput .searchMore{
+            right: 0px;
+            top: 10px;
+        }
+        .medicalSearchInput .searchSubmit2{
+            text-align: center;
+            right: 1px;
+            top:0;
+        }
+        .activeTr{
+            background: #1E9FFF;
+            color: #fff;
+            font-weight: bold;
+        }
+        .activeTr:hover{
+            background: #1E9FFF!important;
+        }
+        .activeTr td[class^='jyjy'],.activeTr td[class^='ciq'],.activeTr td.operate_column a,.activeTr td.operate_column span{
+            color: #fff!important;
+            font-weight: bold;
+        }
+        .sideBar{
+            display: block;
+            position: fixed;
+            z-index: 10;
+            left: 1%;
+        }
+        .sideBar div {
+            margin: 10px 0;
+            padding: 5px 15px;
+            color: #fff;
+            border-radius: 3px;
+        }
+        .caseWorkRange{
+            position:relative;
+        }
+        .searchInpSbcase{
+            width:95%;
+            text-align:left;
+            display: flex;
+            align-items:center;
+        }
+        .caseLaybel{
+            width:8%;
+            display:flex;
+            justify-content:flex-end;
+            align-items:center;
+            padding:5px;
+        }
+        .caseSearch{
+            display:inline-block;
+            width:20%;
+            margin-right:5px;
+        }
+        .caseBtn{
+            width:15%;
+            position: relative;
+            top: -2px;
+            margin-left: 5px;
+        }
+        .dtarea{text-align:center;width:95%;padding:10px;}
+        .vip{display:flex;position:absolute;top:0px;right:0px}
+        .vippic{width:35px;height: auto}
+        .sbysKeyVip{
+            position: absolute;top:0;right:0}
+        .vipSbys{width:165px;position:relative}
+        .sbysKey{width:100%}
+        .moreSearchBtnArea{margin-bottom:20px;position:relative;display:flex;justify-content: center}
+        #subscriblePage{display:none;margin:10px;text-align:right;color:#3388ff;cursor: pointer}
+        .fkwt_tips{display:flex;flex-direction: row;justify-content:space-between;width:826px;margin:auto;align-items: center}
+        .noticeImg{width:18px;height:18px;margin-right:3px;}
+        .tips_1{display:flex;align-items: center}
+        .tips_2{display:flex;align-items: center}
+        .sbys_line{padding:5px;border:1px solid #e6e6e6;margin-bottom:10px;background:#f5f9ff;display:none;}
+        .sbysAreaTitle{display:flex;align-items: center}
+        .sbys_show{display:flex;align-items: center;margin-left:10px;
+            cursor: pointer;}
+    </style>
+    <script>
+        var _hmt = _hmt || [];
+        var _baidu_hmt_alogObjectConfig = "rYUMqsQeFQQ10tXReIuwDEdjuk55kjir9l675tjh1c7i0c0d_43oLFce2vx3gFkbsYCucBja_105359";
+        var ECharts_webmaster_baidu_hmt_C6D4E_5F3G1_H2I0J_KLMNO_PQRSTU_powerful = "";
+        (function() {
+            var hm = document.createElement("script");
+            var gtoKey;
+            hm.src = "https://hm.baidu.com/hm.js?fd5afdcf9e5be520b5a33a47bda3d2c6";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+
+        var browser = {
+            versions: function () {
+                var u = navigator.userAgent, app = navigator.appVersion;
+                return {   //移动终端浏览器版本信息
+                    trident: u.indexOf('Trident') > -1, //IE内核
+                    presto: u.indexOf('Presto') > -1, //opera内核
+                    webKit: u.indexOf('AppleWebKit') > -1, //苹果、谷歌内核
+                    gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') == -1, //火狐内核
+                    mobile: !!u.match(/AppleWebKit.*Mobile.*/), //是否为移动终端
+                    ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端
+                    android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1, //android终端或uc浏览器
+                    iPhone: u.indexOf('iPhone') > -1, //是否为iPhone或者QQHD浏览器
+                    iPad: u.indexOf('iPad') > -1, //是否iPad
+                    webApp: u.indexOf('Safari') == -1 //是否web应该程序，没有头部与底部
+                };
+            }(),
+            language: (navigator.browserLanguage || navigator.language).toLowerCase()
+        }
+
+        if (browser.versions.mobile) {//判断是否是移动设备打开。browser代码在下面
+            window.location.href = 'https://www.guanwuxiaoer.com/hscode.php?mod=m';
+        }
+
+        // 设置title description 动态年份
+        // var CURDate = new Date();
+        // document.title= CURDate.getFullYear()+ "海关商品编码税率查询-关务小二";
+        // var metaList = document.getElementsByTagName("meta");
+        // for (var i = 0; i < metaList.length; i++) {
+        //     if (metaList[i].getAttribute("name") == "description") {
+        //     metaList[i].content = "关务小二海关编码查询网提供"+ CURDate.getFullYear() +"年最新HSCODE商品编码查询，进出口税率、监管条件和CIQ等查询，支持历史变更查询及动态订阅。";
+        //     }
+        // }
+    </script>
+    <link id="layuicss-layer" rel="stylesheet" href="https://www.guanwuxiaoer.com/static/layui/css/modules/layer/default/layer.css?v=3.1.1" media="all"></head>
+<body id="body">
+
+<div id="customsWechatLoginId" style="position: fixed; width: 400px; top: 80px; border: 1px solid rgb(204, 204, 204); background-color: rgb(255, 255, 255); z-index: 99999; border-radius: 10px; box-shadow: rgba(0, 0, 0, 0.15) 0px 4px 10px; padding: 15px; display: none; left: 520px;">
+    <div style="width:100%;font-size:18px;color:#898989;top:10px;right:10px;text-align:right;">
+        <span style="cursor:pointer;" onclick="closeLogin()">X</span>
+    </div>
+    <div style="font-size: 20px;color: #999;border-bottom: 2px solid #dfdfdf;padding: 20px 20px 0 20px;display:table;">
+        <span class="qrcodeWechatLoginBtn" style="float: left;width: 160px;text-align: center;padding-bottom: 15px;cursor: pointer;border-bottom: 2px solid transparent;border-bottom-color:#2e82ff;position: relative;" onclick="qrcodeLogin()">微信登录</span>
+        <span class="accrountLoginBtn" style="float: left;width: 160px;text-align: center;padding-bottom: 15px;cursor: pointer;border-bottom: 2px solid transparent;position: relative;" onclick="accountLogin()">账号登录</span>
+    </div>
+    <div id="qrcodeWechatLoginArea" class="qrcodeLoginAreaContent" style="">
+        <div class="qrcodeArea" style="min-height:222px;" onclick="createqrcode()">
+        </div>
+        <div class="bind_phone" style="display:none;">
+            <div style="margin-top:15px;">*请绑定手机号码</div>
+            <div style="text-align:center;padding:10px;margin-top:20px;">
+                <input style="height: 20px;line-height: 20px;width: 282px !important;padding: 10px 8px !important;font-size: 12px;border: 1px solid #eaeaea;box-sizing: content-box !important;" type="text" name="wqw" placeholder="手机号码" id="phoneNum">
+            </div>
+            <div style="text-align:center;padding:10px;">
+                <input style="height: 20px;line-height: 20px;width: 160px !important;padding: 10px 8px !important;font-size: 12px;border: 1px solid #eaeaea;box-sizing: content-box !important;vertical-align: top;" type="text" name="wef" placeholder="验证码" id="captcha">
+                <button style="background-color:#2e82ff;height: 20px;line-height: 20px;width: 100px !important;padding: 10px 8px !important;font-size: 12px;border: 1px solid #eaeaea;box-sizing: content-box !important;color:#fff" type="" name="" class="layui-btn" id="sendAgain" onclick="sendNote()">发送验证码</button>
+            </div>
+            <div style="text-align:center;padding:10px;">
+                <button style="background-color:#2e82ff;height: 20px;line-height: 20px;width: 282px !important;padding: 10px 8px !important;font-size: 12px;border: 1px solid #eaeaea;box-sizing: content-box !important;color:#fff" type="" name="" class="layui-btn" onclick="checkPhone()">绑定手机号码</button>
+            </div>
+        </div>
+        <div class="setpassArea" style="display:none;">
+            <div style="margin-top:15px;">*请设置账号密码</div>
+            <div style="text-align:center;padding:10px;margin-top:20px;">
+                <input style="height: 20px;line-height: 20px;width: 282px !important;padding: 10px 8px !important;font-size: 12px;border: 1px solid #eaeaea;box-sizing: content-box !important;" type="password" name="" placeholder="密码" id="setpass1">
+            </div>
+            <div style="text-align:center;padding:10px;">
+                <input style="height: 20px;line-height: 20px;width: 282px !important;padding: 10px 8px !important;font-size: 12px;border: 1px solid #eaeaea;box-sizing: content-box !important;" type="password" name="" placeholder="确认密码" id="setpass2">
+            </div>
+            <div style="text-align:center;padding:10px;">
+                <button style="background-color:#2e82ff;height: 20px;line-height: 20px;width: 282px !important;padding: 10px 8px !important;font-size: 12px;border: 1px solid #eaeaea;box-sizing: content-box !important;" class="layui-btn" onclick="setpass()">完成并登录</button>
+            </div>
+        </div>
+        <div class="wechatScantips">
+            使用微信扫码关注「关务圈」即可登录
+        </div>
+    </div>
+    <div class="accountLoginAreaContent" style="width:95%;text-align:center;padding:20px 10px 10px 10px;display:none;">
+        <div style="text-align:center;padding:10px;">
+            <input style="height: 20px;line-height: 20px;width: 282px !important;padding: 10px 8px !important;font-size: 12px;border: 1px solid #eaeaea;box-sizing: content-box !important;" type="" name="" placeholder="用户名" id="usernameForLogin">
+        </div>
+        <div style="text-align:center;padding:10px;">
+            <input style="height: 20px;line-height: 20px;width: 282px !important;padding: 10px 8px !important;font-size: 12px;border: 1px solid #eaeaea;box-sizing: content-box !important;" type="password" name="" placeholder="密码" id="passForLogin">
+        </div>
+        <div style="text-align:center;padding:10px;">
+            <input style="height: 20px;line-height: 20px;width: 100px !important;padding: 10px 8px !important;font-size: 12px;border: 1px solid #eaeaea;box-sizing: content-box !important;vertical-align: top;" type="" name="" placeholder="验证码" id="captchaForLogin">
+            <img id="captchaForReg" style="width:170px;margin-left:10px;height:40px;border:1px solid #ccc" src="" onclick="showCaptcha($(this))">
+        </div>
+        <div style="text-align:center;padding:10px;">
+            <a style="color:#2e82ff;position:absolute;left:63px;" href="https://www.guanwuxiaoer.com/member.php?mod=signup" target="_blank">立即注册</a>
+            <a style="color:#2e82ff;position:absolute;right:63px;" href="https://www.guanwuxiaoer.com/member.php?mod=logging&amp;action=login&amp;viewlostpw=1&amp;infloat=yes&amp;handlekey=login" target="_blank">忘记密码</a>
+        </div>
+        <div style="margin-top:20px;">
+            <button style="width: 300px;height: 40px;line-height: 40px;margin: 0 30px;margin-top: 0;border: 0;background: #2e82ff;color: #fff;font-size: 14px;font-weight: 800;cursor:pointer;" onclick="loginForAccount()">登录</button>
+        </div>
+    </div>
+    <input type="hidden" name="" id="hiddenSearch">
+    <input type="hidden" name="" id="hiddenWhite">
+    <input type="hidden" name="" id="hiddenBlack">
+    <input type="hidden" name="" id="timeSearch" value="open">
+    <input type="hidden" name="" id="userKey">
+    <input type="hidden" name="" id="subscribeType">
+    <input type="hidden" name="" id="checkCode">
+    <input type="hidden" name="" id="captchaLoin">
+    <input type="hidden" name="" id="btnMoreSearch">
+    <input type="hidden" name="" id="hscodearr">
+</div>
+
+<div class="gap">
+    <div style="padding-bottom:100px;padding-top:100px">
+        <style>
+            #pdArea{display:none;justify-content:center}
+            #pdArea2{display:none;justify-content:center}
+            #pd{width:100%;height:100%;
+                z-index:19891014;background-color:rgb(0, 0, 0);opacity: 0.3;
+                position:fixed;text-align:center;
+                top:0;left:0;
+            }
+            #pd2{width:100%;height:100%;
+                z-index:19891014;background-color:rgb(0, 0, 0);opacity: 0.3;
+                position:fixed;text-align:center;
+                top:0;left:0;
+            }
+            #pd-area{
+                z-index:19891015;width:500px;height:auto;
+                background:white;margin:200px auto;opacity:1;
+                position:fixed;top:0px;border-radius:7px;
+                padding:10px 15px;
+            }
+            #pd-area2{
+                z-index:19891015;width:500px;height:auto;
+                background:white;margin:200px auto;opacity:1;
+                position:fixed;top:0px;border-radius:7px;
+                padding:10px 15px;
+            }
+            .pd-row{display:flex;width:100%;box-sizing:border-box;justify-content:space-between;align-items: center}
+            .pd-row-right{justify-content:flex-end}
+            .pd-row-left{justify-content:flex-start}
+            .pd-tip{font-size:20px;font-weight: bold}
+            .pd-close{width:15px;height:15px;cursor:pointer}
+            .pd-btn{padding:6px 15px;border-radius:3px;box-sizing:border-box;color:white;background:#2196f3;cursor:pointer}
+            .pd-btn-normal{padding:6px 15px;border-radius:3px;border:1px solid #ccc;box-sizing:border-box;color:black;background:white;cursor:pointer}
+            .pd-warning{width:25px;height:25px}
+            .pd-tips-label{width:5%;margin-right:10px;}
+            .pd-tips-detail{width:85%;box-sizing:border-box}
+            .powerTips{font-size:16px;font-weight:bold;margin-bottom:5px;color:#5A5A5A;line-height:24px;}
+            .powerTips2{font-size:16px;font-weight:bold;margin-bottom:5px;color:#5A5A5A;line-height:24px;}
+            .ipTips{font-size:16px;font-weight:bold;color:#5A5A5A}
+            .ipTips2{font-size:16px;font-weight:bold;color:#5A5A5A}
+            .nowTime{color:red;}
+        </style>
+        <div class="title">
+            <div class="logo">
+                <a href="/">
+                    <img src="/static/taxes/img/logo70.png" alt="" style="padding:5px;">
+                </a>
+            </div>
+            <div class="menu">
+                <ul>
+                    <li><a href="https://www.guanwuxiaoer.com" target="_blank">关务论坛</a></li>
+                    <li><a href="https://www.guanwuxiaoer.com/thread-892-1-1.html" target="_blank">防疫物资通关</a></li>
+                    <li><a href="https://www.guanwuxiaoer.com/medical.php" target="_blank">医械查询</a></li>
+                    <li><a href="https://www.guanwuxiaoer.com/taxes.php" target="_blank">中美关税查询</a></li>
+                    <li><a href="https://www.guanwuxiaoer.com/haiguanhuilv.php" target="_blank">海关汇率</a></li>
+                    <li><a href="https://www.guanwuxiaoer.com/plugin.php?id=sanree_shop" target="_blank">关务书籍</a></li>
+                    <li><a href="https://www.guanwuxiaoer.com/guanwujob.html" target="_blank">招聘求职</a></li>
+                </ul>
+            </div>
+            <div class="userinfo">
+                <!-- 欢迎您, donaldyyyy -->
+                <div class="loginLogo">
+                    <!-- showLoginMenu -->
+                    <!--  -->
+                    <div id="userMenus" onmouseover="showAccountMenu(1)" onmouseout="showAccountMenu(2)">
+                        <!--  -->
+                        <img style="width:26px;height:26px;" src="/static/medical/img/user.svg" alt="">
+                        <!--  -->
+                        <span style="margin-left:5px;">donaldyyyy</span>
+                    </div>
+                    <!--  -->
+                    <!-- <img onclick='showLoginMenu()' style='width:30px;height:30px;' src="/static/medical/img/login.svg"> -->
+                    <div class="loginOutArea" style="display: none;">
+                        <a class="forHover">
+                            <span style="width:80%;overflow:hidden;position:relative;float: left;text-align:left;margin-left:3px;bottom:0px;line-height:26px;">Hi，donaldyyyy</span>
+                            <span style="position:relative;float:right;">
+                        <!--  -->
+                        <img style="width:26px;height:26px;" src="/static/medical/img/user.svg" alt="">
+                                <!--  -->
+                    </span>
+                        </a>
+                        <a class="forHover" href="https://www.guanwuxiaoer.com/plugin.php?id=sanree_shop" target="_blank" style="background:#ededed;position:relative;">
+                            <span style="width:65%;font-size:10px;overflow:hidden;position:relative;float: left;text-align:left;margin-left:3px;bottom:0px;line-height:26px;">正版关务书籍优惠包邮</span>
+                            <span style="position:relative;float:right;top: 3px;">
+                        <div style="width: 60px;height: 20px;text-align: center;line-height: 20px;font-size: 12px;background-color: #52b4ff;color: #fff;border-radius: 10px;">立即订购</div>
+                    </span>
+                        </a>
+                        <a class="forHover" href="https://www.guanwuxiaoer.com/auth.php" target="_blank">
+                    <span style="position:relative;float:left;line-height:23px;">
+                        <img style="width:20px;height:20px;" src="/static/image/option.png" alt="">
+                    </span>
+                            <span style="width:65%;overflow:hidden;position:relative;float: right;text-align:left;margin-left:3px;bottom:0px;line-height:26px;">
+                        账号设置
+                    </span>
+                        </a>
+                        <a class="forHover" href="https://www.guanwuxiaoer.com/home.php?mod=spacecp" target="_blank">
+                    <span style="position:relative;float:left;line-height:23px;">
+                        <img style="width:20px;height:20px;" src="/static/taxes/img/index/user.png" alt="">
+                    </span>
+                            <span style="width:65%;overflow:hidden;position:relative;float: right;text-align:left;margin-left:3px;bottom:0px;line-height:26px;">
+                        个人中心
+                    </span>
+                        </a>
+                        <a class="forHover" href="https://www.guanwuxiaoer.com/home.php?mod=space&amp;do=notice" target="_blank">
+                    <span style="position:relative;float:left;line-height:23px;">
+                        <img style="width:20px;height:20px;" src="/static/taxes/img/index/message.png" alt="">
+                    </span>
+                            <span style="width:65%;overflow:hidden;position:relative;float: right;text-align:left;margin-left:3px;bottom:0px;line-height:26px;">
+                        消息提醒
+                    </span>
+                        </a>
+                        <a class="forHover" href="https://www.guanwuxiaoer.com/home.php?mod=spacecp&amp;ac=promotion" target="_blank">
+                    <span style="position:relative;float:left;line-height:23px;">
+                        <img style="width:20px;height:20px;" src="/static/taxes/img/index/chongzhi.png" alt="">
+                    </span>
+                            <span style="width:65%;overflow:hidden;position:relative;float: right;text-align:left;margin-left:3px;bottom:0px;line-height:26px;">
+                        邀请好友
+                    </span>
+                        </a>
+                        <a class="forHover" href="https://www.guanwuxiaoer.com/member.php?mod=logging&amp;action=logout&amp;formhash=05b74cbf&amp;now=hscode.php" target="_blank">
+                    <span style="position:relative;float:left;line-height:23px;">
+                        <img style="width:20px;height:20px;" src="/static/taxes/img/index/logout.png" alt="">
+                    </span>
+                            <span style="width:65%;overflow:hidden;position:relative;float: right;text-align:left;margin-left:3px;bottom:0px;line-height:26px;">
+                        安全退出
+                    </span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="pdArea">
+            <div id="pd"></div>
+            <div id="pd-area">
+                <div class="pd-row">
+                    <div class="pd-tip">提示</div>
+                    <div><img class="pd-close" src="/static/image/close26.png" alt=""></div>
+                </div>
+                <div class="pd-row pd-row-left" style="margin-top:10px">
+                    <div class="pd-tips-label"><img class="pd-warning" src="/static/image/tips-yellow.png" alt=""></div>
+                    <div class="pd-tips-detail">
+                        <div class="powerTips"></div>
+                        <div class="ipTips">登录地址：123.123.123.123</div>
+                    </div>
+                </div>
+                <div class="pd-btn-area pd-row pd-row-right" style="margin-top:20px">
+
+                </div>
+            </div>
+        </div>
+
+        <div id="pdArea2">
+            <div id="pd2"></div>
+            <div id="pd-area2">
+                <div class="pd-row">
+                    <div class="pd-tip">提示</div>
+                    <div><img class="pd-close" src="/static/image/close26.png" alt=""></div>
+                </div>
+                <div class="pd-row pd-row-left" style="margin-top:10px">
+                    <div class="pd-tips-label"><img class="pd-warning" src="/static/image/tips-yellow.png" alt=""></div>
+                    <div class="pd-tips-detail">
+                        <div class="powerTips2"></div>
+                    </div>
+                </div>
+                <div class="pd-btn-area2 pd-row pd-row-right" style="margin-top:20px">
+
+                </div>
+            </div>
+        </div>
+        <a id="gotobindwechat" href="https://www.guanwuxiaoer.com/auth.php" style="display:none" target="_blank"></a>
+        <div class="rightMenuAllRange">
+            <div class="rightMenuHeader">
+                <span class="headerRightMenu" onclick="selectMenu(1,$(this))"><img class="headerSvg" src="/static/image/contrast.png"></span>
+                <span class="headerRightMenu2" onclick="selectMenu(2,$(this))"><img class="headerSvg" src="/static/image/subscrible2.png"></span>
+            </div>
+            <div class="rightMenu">
+                <div class="hscodedb">
+                    <span class="ptdb">编码对比</span>
+                    <!-- <span class='turnoff' onclick='turnoff()'>X</span> -->
+                </div>
+                <div class="chooseHscodeList"></div>
+                <div class="layui-form">
+                    <div class="chooseBtn">
+                        <input id="searchBtn" onclick="searchHsCodeBtn()" class="layui-input" style="height:30px;" placeholder="商品编码" type="text" name="">
+                        <div class="hscodelist">
+
+                        </div>
+                    </div>
+                </div>
+                <div class="rightMenuFooter">
+                    <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="toContrast()">开始对比</button>
+                    <a class="clearlist" onclick="clearlist()">清空</a>
+                </div>
+            </div>
+            <div class="subscribeList">
+                <div class="hscodedb">
+                    <span class="ptdb">我的订阅</span>
+                </div>
+                <div class="subscribeRange">
+                    <!--                     <div class='hscode_div'><span>63079000</span><span class='XXX'></span></div>
+                                        <div class='hscode_div'><span>63079000</span><span class='XXX'></span></div>
+                                        <div class='hscode_div'><span>63079000</span><span class='XXX'></span></div>
+                                        <div class='hscode_div'><span>63079000</span><span class='XXX'></span></div>
+                                        <div class='hscode_div'><span>63079000</span><span class='XXX'></span></div> -->
+                </div>
+                <div id="subscriblePage" onclick="glSub()">管理订阅</div>
+            </div>
+        </div>
+
+        <div class="searchArea">
+            <div class="searchRange" style="padding-bottom:25px;">
+                <div class="searchBtn">
+                    <a style="text-align:center;width:120px;display:inline-block;padding:13px;font-size:15px;color:white;font-weight:bold;cursor:pointer;border-bottom:5px solid #afdcfe" href="/hscode.php">商品编码查询</a>
+                    <a style="text-align:center;width:120px;display:inline-block;padding:18px;font-size:15px;color:rgba(255,255,255,.7);font-weight:bold;cursor:pointer;" href="/hscode.php?action=contrast">商品编码对比</a>
+                    <a style="text-align:center;width:120px;display:inline-block;padding:18px;font-size:15px;color:rgba(255,255,255,.7);font-weight:bold;cursor:pointer;" href="/hscode.php?action=change">商品编码变更记录</a>
+                    <a style="text-align:center;width:120px;display:inline-block;padding:18px;font-size:15px;color:rgba(255,255,255,.7);font-weight:bold;cursor:pointer;" href="/hscode.php?action=download">编码数据下载</a>
+                    <a style="text-align:center;width:120px;display:inline-block;padding:18px;font-size:15px;color:rgba(255,255,255,.7);font-weight:bold;cursor:pointer;" href="/hscode.php?action=subscribe">我的订阅</a>
+                    <span style="text-align:center;display:inline-block;padding:18px;font-size:15px;margin: 10px 0;padding: 10px 12px 10px 12px;height: 20px;width: auto;background: #ffd;line-height: 20px;border-radius: 14px;">
+<a href="https://www.guanwuxiaoer.com/plugin.php?id=hl_vip" style="color: #F44336;font-weight: 600;" target="_blank">
+<img src="https://www.guanwuxiaoer.com/static/image/laba_1s.gif" style="width: 41px;height: auto;border:0px">
+开通<img src="https://www.guanwuxiaoer.com/static/image/fontvip.gif" style="width: 27px;height: auto;border:0px" alt="VIP会员">尊享更多权益</a>
+</span>
+                </div>
+                <div style="text-align:center;width:100%;">
+                    <div class="medicalSearchInput">
+                        <input id="btn" class="searchInput" type="text" name="hscodeKey" placeholder="请输入商品编码 / 关键字" value="" autocomplete="off">
+                        <div style="position:relative;"><img class="searchMore" src="/static/image/moreSearcch.png" onclick="showMoreSearch()"></div>
+                        <span id="searchSubmit" class="searchSubmit2" onclick="getHsCodeSearch()">
+                            <i class="layui-icon"></i>&nbsp;&nbsp;查询                        </span>
+                        <!--                         <div class='layui-form smallForm' style="width:9%;display: inline-block;vertical-align: bottom;text-align:center;margin-left:10px;">
+                                                </div> -->
+                        <div style="display: none;" id="memorySearchBox">
+                            <div id="memoryItemBox"><div class="item"><span class="code">9802009000</span><span class="del">×</span></div><div class="item"><span class="code">4010390</span><span class="del">×</span></div><div class="item"><span class="code">4010390000</span><span class="del">×</span></div></div>
+                            <div style="text-align: right;">
+                                <span class="delAll" onclick="deleteAll()">清空所有历史记录</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="fkwt_tips">
+                    <div class="tips_1">
+                        <img class="noticeImg" src="/static/image/notice.png" alt="">
+                        <a href="https://www.guanwuxiaoer.com/taxes.php" target="_blank" style="color:#3388ff;margin-right:10px;">中美关税加征查询</a>
+                        <a href="https://www.guanwuxiaoer.com/haiguanhuilv.php" target="_blank" style="color:#3388ff;">进出口海关适用汇率查询</a>
+                    </div>
+                    <div class="layui-form">
+                        <input type="checkbox" title="过滤过期编码" lay-skin="primary" id="expiresIndex" checked=""><div class="layui-unselect layui-form-checkbox layui-form-checked" lay-skin="primary"><span>过滤过期编码</span><i class="layui-icon layui-icon-ok"></i></div>
+                    </div>
+                    <div class="tips_2">
+                        <div style="color:#878787">数据更新时间：2023-05-28</div>
+                        <a href="https://support.qq.com/product/444210" target="_blank" style="color:#878787;border-bottom: 1px #909399 dashed;margin-left:10px">反馈问题</a>
+                    </div>
+                </div>
+                <span class="menuhot">热</span></div>
+            <!-- <div id="ggg" style='width:100%;height:500px;'></div> -->
+            <!-- <div style='width:100%;height:20px;'></div> -->
+            <div class="searchRange2" style="display:block">
+                <div class="layui-form" style="margin-top:10px;margin-left:auto;margin-right:auto;width:97%;height:auto;padding:10px;">
+                    <table class="layui-table" id="table" style="width: 100%; background-image: url(&quot;data:image/png;base64,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&quot;);"><thead><tr><th style="width:8%;font-weight:bold;">海关编码</th><th style="width:22%;font-weight:bold;">货物名称</th><th style="width:8%;font-weight:bold;">历史实例</th><th style="width:6%;font-weight:bold;">进口最惠税</th><th style="width:8%;font-weight:bold;">进口暂定税</th><th style="width:8%;font-weight:bold;">进口增值税</th><th style="width:7%;font-weight:bold;">计量单位</th><th style="width:7%;font-weight:bold;">监管条件</th><th style="width:7%;font-weight:bold;">检验检疫</th><th style="width:20%;font-weight:bold;">操作</th></tr></thead><tbody><tr class="tr_9802009000 activeTr"><td style="border-top: 2px dashed rgb(51, 136, 255); border-left: 2px dashed rgb(51, 136, 255);">9802009000</td><td style="border-top: 2px dashed rgb(51, 136, 255);">流通中的外币现钞</td><td style="cursor: pointer; border-top: 2px dashed rgb(51, 136, 255);" onclick="showSbysCase('9802009000','0')">（0条）</td><td style="border-top: 2px dashed rgb(51, 136, 255);">0%</td><td style="border-top: 2px dashed rgb(51, 136, 255);"></td><td style="border-top: 2px dashed rgb(51, 136, 255);">0%</td><td style="border-top: 2px dashed rgb(51, 136, 255);">千克</td><td class="jyjy_9802009000" style="color: rgb(51, 136, 255); cursor: pointer; border-top: 2px dashed rgb(51, 136, 255);" onmouseover="getDetailTips('无','jyjy',$(this))">无</td><td style="border-top: 2px dashed rgb(51, 136, 255);">无</td><td class="operate_column" style="color: rgb(51, 136, 255); font-size: 10px !important; border-right: 2px dashed rgb(51, 136, 255); border-top: 2px dashed rgb(51, 136, 255);"><a style="color:#3388ff;" href="javascript:void(0)" data-on="1" onclick="getDetail($(this),'9802009000')">详情▲</a>&nbsp;&nbsp;<span style="cursor:pointer;" onclick="showHsCode('9802009000')">申报要素</span>&nbsp;&nbsp;&nbsp;<span style="cursor:pointer;" onclick="showSbysCase('9802009000')">申报实例</span>&nbsp;&nbsp;&nbsp;<span class="layui-btn layui-btn-xs contrastBgColor contrast_9802009000" data-value="9802009000" onclick="contrastHsCode($(this))" title="点此将HS编码 9802009000 列入对比，可对比不同编码的进出口税率、申报要素等信息">对比</span><span class="layui-btn layui-btn-xs layui-btn-normal subscribeToHscode" onclick="subscribeCode('9802009000')" title="点此订阅HS编码 9802009000变更动态，编码增删/监管条件/申报要素/税率/检验检疫有变更时立即通知你">订阅</span></td></tr><tr class="detail detail_9802009000"><td class="infoContent" colspan="10"><div class="layui-row" style="background-image: url(&quot;data:image/png;base64,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&quot;); background-color: rgb(255, 255, 255);"><span class="layui-badge layui-bg-blue labelForTable">商品信息及税率</span><a target="_blank" href="https://www.guanwuxiaoer.com/thread-570-1-1.html" style="display:inline-block;padding:0 5px;cursor:pointer;color:#1E9FFF;"><svg style="display: inline-block;padding: 0 5px;cursor: pointer;vertical-align: middle;" t="1603784206639" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5187" width="20" height="20"><path d="M528.32 28.352l5.312 1.408 373.376 113.152c29.952 9.088 50.944 35.84 52.864 66.752L960 214.4v407.872c0 183.872-145.856 314.624-426.112 393.6L512 1021.824l-9.792-2.688c-284.16-77.44-433.92-206.72-438.144-389.12L64 622.272V214.4c0-31.36 19.52-59.136 48.64-69.952l4.352-1.472L490.368 29.76c12.288-3.712 25.408-4.224 37.952-1.408z m265.088 318.464H510.336v220.16h46.592c-3.136 77.44-17.856 146.688-44.032 207.808l57.792 24.768 6.08-14.656c25.792-65.344 40.128-138.048 43.072-217.856l63.488-0.064v125.824l0.192 5.568a94.4 94.4 0 0 0 94.208 88.832h47.168v-62.912h-47.168l-3.712-0.256a31.488 31.488 0 0 1-27.776-31.232V567.04h47.168V346.88zM473.728 252.8l-11.008 1.728c-59.712 9.024-138.24 13.568-235.52 13.568v62.912h18.56c26.688-0.192 51.968-0.704 75.904-1.6v48.768H227.2v62.912h94.336V787.2h62.912V441.152h94.4V378.24H384.512l0.064-52.096c37.312-2.624 70.4-6.4 99.456-11.2l-10.304-62.08zM290.176 472.64H227.2l-0.256 34.944a2532.864 2532.864 0 0 1-15.36 244.672l62.592 6.912 3.712-35.84c8.128-83.52 12.16-167.104 12.16-250.688z m188.736 0H416v283.072h62.912V472.64z m251.584-62.912v94.336H573.248V409.728h157.248z m-110.08-157.312H526.08v62.912h94.336v-62.912z m157.312 0h-94.4v62.912h94.4v-62.912z" fill="#1E9FFF" p-id="5188"></path></svg>各类税率的区别与适用</a><button type="button" class="layui-btn layui-btn-sm" style="position: absolute;right: 15px;top: 8px;" onclick="downloadImg('9802009000')"> <i class="layui-icon layui-icon-download-circle layui-font-12"></i>一键截图</button><table style="width:100%;margin-bottom:8px;"><tbody><tr onmouseover="hoverforTitle('9802009000',1)" onmouseout="outhoverforTitle('9802009000',1)"><td rowspan="2" id="normalMessage_9802009000" class="detailTitle normalInfo" style="width: 7%; background-color: rgb(245, 249, 255);">基本信息</td><td>商品描述</td><td colspan="7">流通中的外币现钞(包括纸币及硬币)<br></td></tr><tr onmouseover="hoverforTitle('9802009000',1)" onmouseout="outhoverforTitle('9802009000',1)"><td>第一法定单位及代码</td><td>千克 / 035</td><td>第二法定单位及代码</td><td>无</td><td>监管条件</td><td class="jyjy_9802009000" style="color:#3388ff;cursor:pointer;" onmouseover="getDetailTips('无','jyjy',$(this))">无</td><td>检验检疫类别</td><td class="ciq_9802009000" style="color:#3388ff;cursor:pointer;" onmouseover="getDetailTips('无','ciq',$(this))">无</td></tr><tr onmouseover="hoverforTitle('9802009000',2)" onmouseout="outhoverforTitle('9802009000',2)"><td id="importTaxes_9802009000" rowspan="4" class="detailTitle importTaxes" style="background-color: rgb(245, 249, 255);">进口税率</td><td>进口最惠国税率</td><td class="detailTax">0%</td><td>进口普通税率</td><td class="detailTax">0%</td><td>进口暂定税率</td><td class="detailTax">无</td><td>进口消费税率</td><td class="detailTax">0%</td></tr><tr onmouseover="hoverforTitle('9802009000',2)" onmouseout="outhoverforTitle('9802009000',2)"><td>进口增值税率</td><td class="detailTax">0%</td><td>进口反倾销税率</td><td class="detailTax">无</td><td>进口反补贴税率</td><td class="detailTax">无</td><td>进口废弃电器电子基金/保障措施</td><td class="detailTax">无</td></tr><tr onmouseover="hoverforTitle('9802009000',2)" onmouseout="outhoverforTitle('9802009000',2)"><td colspan="8" style="text-align:center;font-weight:bold;">进口协定税率及协定代码</td></tr><tr><td colspan="8" style="text-align:center;">无</td></tr><tr onmouseover="hoverforTitle('9802009000',3)" onmouseout="outhoverforTitle('9802009000',3)"><td id="exportTaxes_9802009000" class="detailTitle exportTaxes" style="background-color: rgb(245, 249, 255);">出口税率</td><td>出口关税率</td><td class="detailTax">无</td><td>出口暂定税率</td><td class="detailTax">无</td><td>出口退税率</td><td class="detailTax" colspan="3"><span class="reRate_9802009000" style="color:#3388ff;cursor:pointer;" onclick="getReRateTips('9802009000')">0%&nbsp;&nbsp;<img style="width:30px;cursor:pointer;margin-bottom: 10px;" src="/static/hscode/img/line_chart.svg" title="查看历史税率">&nbsp;查看历史税率</span><span>(退税率文库版本2023A)</span></td></tr></tbody></table><div class="sbysAreaTitle"><span class="layui-badge layui-bg-blue labelForTable">商品编码 9802009000 申报要素信息</span><div class="sbys_show_9802009000 sbys_show" onclick="showChange('9802009000',1)"><svg t="1668568754869" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4404" width="16" height="16"><path d="M771.072 996.352H258.048c-126.976 0-230.4-103.424-230.4-230.4v-512c0-126.976 103.424-230.4 230.4-230.4h513.024c126.976 0 230.4 103.424 230.4 230.4v513.024c0 125.952-103.424 229.376-230.4 229.376z m-513.024-880.64c-75.776 0-138.24 62.464-138.24 138.24v513.024c0 75.776 62.464 138.24 138.24 138.24h513.024c75.776 0 138.24-62.464 138.24-138.24V253.952c0-75.776-62.464-138.24-138.24-138.24H258.048z" fill="#1296db" p-id="4405" data-spm-anchor-id="a313x.7781069.0.i12" class="" style="user-select: auto;"></path><path d="M468.992 739.328V307.2c0-25.6 20.48-46.08 46.08-46.08s46.08 20.48 46.08 46.08v432.128c0 25.6-20.48 46.08-46.08 46.08s-46.08-20.48-46.08-46.08z" fill="#13227a" p-id="4406" data-spm-anchor-id="a313x.7781069.0.i13" class="" style="user-select: auto;"></path><path d="M730.112 232.448h-430.08c-25.6 0-46.08 20.48-46.08 46.08s20.48 46.08 46.08 46.08h164.864V307.2c0-27.648 22.528-50.176 50.176-50.176s50.176 22.528 50.176 50.176v17.408h164.864c25.6 0 46.08-20.48 46.08-46.08s-20.48-46.08-46.08-46.08z" fill="#f66e05" p-id="4407" style="user-select: auto;" data-spm-anchor-id="a313x.7781069.0.i17" class=""></path><path d="M350.208 232.448h-61.44c-19.456 0-34.816 15.36-34.816 34.816v83.968c0 33.792 43.008 47.104 62.464 20.48l61.44-83.968c16.384-22.528 0-55.296-27.648-55.296z" fill="#f66e05" p-id="4408" style="user-select: auto;" data-spm-anchor-id="a313x.7781069.0.i18" class=""></path><path d="M492.544 732.16v32.768c0 12.288 10.24 22.528 22.528 22.528H573.44c23.552 0 31.744-30.72 11.264-43.008l-58.368-32.768c-15.36-8.192-33.792 3.072-33.792 20.48z" fill="#1296db" p-id="4409" data-spm-anchor-id="a313x.7781069.0.i15" class="" style="user-select: auto;"></path><path d="M537.6 732.16v32.768c0 12.288-10.24 22.528-22.528 22.528h-58.368c-23.552 0-31.744-30.72-11.264-43.008l58.368-32.768c14.336-8.192 33.792 3.072 33.792 20.48z" fill="#1296db" p-id="4410" data-spm-anchor-id="a313x.7781069.0.i14" class="" style="user-select: auto;"></path><path d="M679.936 232.448h61.44c19.456 0 34.816 15.36 34.816 34.816v83.968c0 33.792-43.008 47.104-62.464 20.48l-61.44-83.968c-17.408-22.528-1.024-55.296 27.648-55.296z" fill="#f66e05" p-id="4411" style="user-select: auto;" data-spm-anchor-id="a313x.7781069.0.i16" class=""></path></svg><div style="margin-left:5px;">简洁模式</div></div><div class="sbys_show_9802009000 sbys_show" onclick="showChange('9802009000',2)"><svg t="1668568931355" class="icon" viewBox="0 0 1142 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4454" id="mx_n_1668568931355" width="16" height="16"><path d="M1102.769231 39.384615v945.23077H39.384615V39.384615h1063.384616m0-39.384615H39.384615a39.384615 39.384615 0 0 0-39.384615 39.384615v945.23077a39.384615 39.384615 0 0 0 39.384615 39.384615h1063.384616a39.384615 39.384615 0 0 0 39.384615-39.384615V39.384615a39.384615 39.384615 0 0 0-39.384615-39.384615z" fill="#1296db" p-id="4455" data-spm-anchor-id="a313x.7781069.0.i10" class="" style="user-select: auto;"></path><path d="M39.384615 393.846154h1063.384616v39.384615H39.384615zM39.384615 590.769231h1063.384616v39.384615H39.384615zM39.384615 787.692308h1063.384616v39.384615H39.384615zM39.384615 196.923077h1063.384616v39.384615H39.384615z" fill="#f66e05" p-id="4456" data-spm-anchor-id="a313x.7781069.0.i13" class="" style="user-select: auto;"></path><path d="M315.076923 196.923077v787.692308H275.692308V196.923077zM590.769231 196.923077v787.692308h-39.384616V196.923077zM866.461538 196.923077v787.692308h-39.384615V196.923077z" fill="#f66e05" p-id="4457" data-spm-anchor-id="a313x.7781069.0.i12" class="" style="user-select: auto;"></path><path d="M39.384615 39.384615h1063.384616v157.538462H39.384615z" fill="#13227a" p-id="4458" data-spm-anchor-id="a313x.7781069.0.i11" class="" style="user-select: auto;"></path></svg><div style="margin-left:5px;">详情模式</div></div><span style="margin-left:10px;">要素填写有疑惑？</span><span class="showSbysCase" onclick="showSbysCase('9802009000')">查看申报实例</span></div><table class="sbys_table_9802009000" style="width:100%;margin-bottom:8px;"><tbody><tr><th style="width:20%;text-align:center;" class="detailTitle">申报要素</th><th style="width:10%;text-align:center;" class="detailTitle">是否必填</th><th style="width:10%;text-align:center;" class="detailTitle">要素编码</th><th style="width:40%;text-align:center;" class="detailTitle">要素内容</th><th style="width:10%;text-align:center;" class="detailTitle">进出口标志</th></tr><tr><td colspan="5" style="text-align: center">无</td></tr></tbody></table><div class="sbys_line_9802009000 sbys_line">报关单模式：</div><div class="sbys_line_num_9802009000 sbys_line">数字模式：</div><span class="layui-badge layui-bg-blue labelForTable">检验检疫信息</span><table class="ciqTabel_9802009000" style="width:100%;"><tbody><tr><th style="width:5%;text-align:center;" class="detailTitle">序号</th><th style="width:15%;text-align:center;" class="detailTitle">商品检验检疫编码</th><th style="width:15%;text-align:center;" class="detailTitle">13位海关编码</th><th style="width:25%;text-align:center;" class="detailTitle">检验检疫中英文名</th><th style="width:10%;text-align:center;" class="detailTitle">类型</th><th style="width:20%;text-align:center;" class="detailTitle">HS名称</th></tr><tr><td>1</td><td>999</td><td>9802009000999</td><td>流通中的外币现钞（包括纸币及硬币）</td><td>流通中的货币现钞(不统计)</td><td>流通中的外币现钞(包括纸币及硬币)</td></tr></tbody></table><canvas height="240" style="display: none; z-index: 999;"></canvas></div></td></tr></tbody><canvas height="120" style="display: none; z-index: 999;"></canvas></table>
+                    <div id="page" style="text-align:center;"><div class="layui-box layui-laypage layui-laypage-default" id="layui-laypage-3"><span class="layui-laypage-count">共 1 条</span><a href="javascript:;" class="layui-laypage-prev layui-disabled" data-page="0">上一页</a><span class="layui-laypage-curr"><em class="layui-laypage-em"></em><em>1</em></span><a href="javascript:;" class="layui-laypage-next layui-disabled" data-page="2">下一页</a><span class="layui-laypage-skip">到第<input type="text" min="1" value="1" class="layui-input">页<button type="button" class="layui-laypage-btn">确定</button></span></div></div>
+                    <input type="hidden" id="pageHidden">
+                </div>
+            </div>
+            <div id="detailRange" style="display:none;margin-top:10px">
+                <div style="margin-left:15px">
+                    <div class="layui-row">
+                        <div class="layui-col-md7" style="margin:20px;font-size:25px;text-align:center;">
+                            产品信息详情
+                        </div>
+                        <div class="layui-col-md3" style="margin:20px;font-size:25px;text-align:center;">
+                            企业工商信息及海关备案信息
+                        </div>
+                    </div>
+                    <div class="layui-row">
+                        <div class="layui-col-md1">
+                            <div class="layui-row grid-demo">
+                                <div class="layui-col-md12">
+                                    <div class="grid-demo grid-demo-bg1">&nbsp;</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-col-md5" id="detailContent">
+                            <div class="layui-row grid-demo">
+                                <div class="layui-col-md3">
+                                    <div class="grid-demo grid-demo-bg1">内部列B1</div>
+                                </div>
+                                <div class="layui-col-md9">
+                                    <div class="grid-demo grid-demo-bg2">内部列B2</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-col-md1">
+                            <div class="layui-row grid-demo">
+                                <div class="layui-col-md12">
+                                    <div class="grid-demo grid-demo-bg1">&nbsp;</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-col-md4" id="detailContent2">
+                        </div>
+                        <div class="layui-col-md1">
+                            <div class="layui-row grid-demo" style="text-align: center;">
+                                <div class="layui-col-md12">
+                                    <div class="grid-demo grid-demo-bg1"><button onclick="comeBack()" class="layui-btn layui-btn-xs layui-btn-normal" style="margin-top:20px;">返回</button></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div style="text-align: center;">
+                    <button onclick="comeBack()" class="layui-btn layui-btn-normal" style="margin-bottom:20px;">返回</button>
+                </div>
+            </div>
+            <input type="hidden" id="zxsj_type">
+            <input type="hidden" id="normal_type">
+            <input type="hidden" id="updown" value="2">
+            <input type="hidden" id="gwToken" value="">
+            <div class="login-cover"></div>
+        </div>
+        <div class="menuDisk" onclick="menuDisk()"><img style="width:20px;height:20px;margin-top:14px;cursor:pointer;" src="/static/svg/menu.svg"></div>
+        <div style="text-align: center; color: #999; font-size: 12px;margin: 10px 0;">
+            <span style="background-color: #999;color: #fff;display: inline-block;width: 14px;height: 14px;    vertical-align: middle;border-radius: 50%;line-height: 14px;">i</span>
+            免责声明：本站所提供的归类及税率等信息仅供参考，不保证所提供的资料和服务无任何瑕疵。您应以实际通关、办理相关手续时现场海关的解释和要求为准，对因使用本站提供的资料和服务可能存在的风险由您本人承担。
+        </div>
+    </div>
+</div>
+<!-- 申报要素弹窗 -->
+<div id="hsCodeDialog" style="display: none;">
+    <table id="hsCodeTable" lay-filter="hsCodeTable"></table>
+</div>
+<footer class="footRange tm-bg-dark-blue">
+    <div class="container" style="height:100%">
+        <div class="row footerLeft">
+            <div class="fAbout">
+                <img src="static/taxes/img/logo-white.png" alt="关务小二">
+                <p>关务小二，国内关务自媒体公众平台之一，旨在推动关企互利、进出口合规与便利化生态，提供国内外关务资讯、数字关务工具、政策解读及周边服务</p>
+            </div>
+            <div class="fNav">
+                <ul>
+                    <li class="first">关于我们</li>
+                    <li><a href="" target="_blank">关于我们</a></li>
+                    <li><a href="" target="_blank">联系我们</a></li>
+                    <li><a href="" target="_blank">商务中心</a></li>
+                    <li><a href="" target="_blank">支付方式</a></li>
+                </ul>
+                <ul>
+                    <li class="first">帮助中心</li>
+                    <li><a href="" target="_blank">发布须知</a></li>
+                    <li><a href="" target="_blank">新手入门</a></li>
+                    <li><a href="" target="_blank">注册账号</a></li>
+                    <li><a href="" target="_blank">如何支付</a></li>
+                </ul>
+                <ul>
+                    <li class="first">新手指南</li>
+                    <li><a href="" target="_blank">使用说明</a></li>
+                    <li><a href="" target="_blank"></a></li>
+                    <li><a href="" target="_blank"></a></li>
+                    <li><a href="" target="_blank"></a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="row footerRight">
+            <div class="footer_content_left" style="float: inherit;">
+                <img src="static/taxes/img/index/code1.jpg">
+                <div class="footer_content_right" style="float: inherit;">
+                    <div class="footer_content_right_content">
+                        <p class="col-sm-12  tm-font-light tm-color-white p-4 tm-margin-b-0">
+                            <img src="static/taxes/img/weixin.png" style="width: 16px;height: 16px;">
+                            关务小二公众号
+                        </p>
+                        <p class="col-sm-12  tm-font-light tm-color-white p-4 tm-margin-b-0">
+                            关注关务小二微信公众号
+                        </p>
+                        <p class="col-sm-12  tm-font-light tm-color-white p-4 tm-margin-b-0">
+                            优先享受问题咨询
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="footer_content_left" style="float: inherit;">
+                <img src="static/taxes/img/index/code2.jpg" style="">
+                <div class="footer_content_right" style="float: inherit;">
+                    <div class="footer_content_right_content">
+                        <p class="col-sm-12  tm-font-light tm-color-white p-4 tm-margin-b-0">
+                            <img src="static/taxes/img/weixin.png" style="width: 16px;height: 16px;">
+                            关务圈
+                        </p>
+                        <p class="col-sm-12  tm-font-light tm-color-white p-4 tm-margin-b-0">
+                            关务人专属的圈子
+                        </p>
+                        <p class="col-sm-12  tm-font-light tm-color-white p-4 tm-margin-b-0">
+                            HS编码订阅，变动抢先知
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="clear: both;"></div>
+    </div>
+    <div class="fCopyRight">
+        <div class="container">
+            <div class="fLinks" id="fLinks">友情链接：<a href="http://www.customs.gov.cn/?rf=guanwuxiaoer.com" target="_blank">海关总署</a><a href="http://shenzhen.customs.gov.cn/?rf=guanwuxiaoer.com" target="_blank">深圳海关</a><a href="https://www.chinaport.gov.cn/?rf=guanwuxiaoer.com" target="_blank">中国电子口岸</a><a href="http://www.chinacba.org/?rf=guanwuxiaoer.com" target="_blank">中国报关协会</a><a href="http://www.gscba.org/?rf=guanwuxiaoer.com" target="_blank">深圳报关协会</a><a href="https://www.guanwuxiaoer.com/" target="_blank">关务论坛</a><a href="http://www.hpcba.org.cn/?rf=guanwuxiaoer.com" target="_blank">黄埔报关协会</a><a href="https://www.singlewindow.cn/?rf=guanwuxiaoer.com" target="_blank">单一窗口</a><a href="https://www.guanwuxiaoer.com/thread-2686-1-1.html" target="_blank">申请友链</a></div>
+            <p>
+                Copyright © 2020 <a href="https://www.guanwuxiaoer.com/" style="color:white;">关务小二</a>
+                <img src="/source/plugin/minbbs_ghs/img/icon-police.png" alt="粤公网安备44030802000522号" style="margin-left:16px">
+                <a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=44030802000522" target="_Blank" style="color:white;">粤公网安备44030802000522号</a>
+            </p>
+        </div>
+    </div>
+</footer>
+<div class="float-buttons">
+    <div class="righitBottomMenu" onclick="GoTop()">
+        <img class="rbLogo" src="/static/medical/img/top.svg">
+    </div>
+    <div class="righitBottomMenu showCs2">
+        <img class="rbLogo" src="/static/medical/img/wechat1.svg">
+    </div>
+    <div class="righitBottomMenu showCs">
+        <img class="rbLogo" src="/static/medical/img/cs1.svg">
+    </div>
+</div>
+<div class="csQrcode">
+    <img class="qrcodeImg" src="static/medical/img/cs_qr.jpg" alt="">
+    <div class="d4"></div>
+</div>
+<div class="csQrcode2" style="display: none;">
+    <img class="qrcodeImg2" src="/static/taxes/img/index/code1.jpg" alt="">
+    <p>扫码关注『关务小二』公众号</p>
+    <div class="d3"></div>
+</div>
+<div class="loadingLine">
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+</div>
+
+
+<script>
+    /* 获取页脚友情链接 */
+    function getFootLinks(){
+        $.ajax({
+            url:"https://www.guanwuxiaoer.com/misc.php?mod=friendlink",
+            type:"get",
+            dataType:"json",
+            success:function(res){
+                var resLen = res.length;
+                var htmlStr = "友情链接：";
+
+                if(resLen){
+                    for(var i=0; i<resLen; i++){
+                        htmlStr+='<a href='+ res[i].url +' target="_blank">'+  res[i].name +'</a>';
+                        if(i== resLen-1){
+                            $("#fLinks").html(htmlStr)
+                        }
+                    }
+                }
+            }
+        });
+    }
+    getFootLinks();
+    /**
+     * 手机验证码 start
+     */
+    var btnTimer = '';
+    var requestTimes = 60;
+    function sendNote() {
+        var tel = $('#phoneNum').val();
+        if (tel == '' || tel == undefined || tel == null) {
+            layAlert('请输入手机号码');
+            return;
+        }
+        $.ajax({
+            url: 'https://api.guanwuxiaoer.com/api/smsmail/addSmsOrder',
+            type: 'post',
+            data: { tel: tel },
+            success: function(res) {
+                var res = JSON.parse(res);
+                if (res.code == 200) {
+                    btnTimer = setInterval(btnTimerFn, 1000);
+                }
+                layAlert(res.msg);
+            }
+        });
+    }
+
+    function btnTimerFn() {
+        //clearInterval(btnTimer);
+        if (requestTimes == 0) {
+            window.requestTimes = 60;
+            clearAllTimer(timerR);
+            clearInterval(btnTimer);
+            var text = '重新发送验证码'
+            $('#sendAgain').removeAttr("disabled");
+            $('#sendAgain').removeClass("layui-btn-disabled");
+        } else {
+            var text = requestTimes + '秒';
+            requestTimes--;
+            $('#sendAgain').attr("disabled", "disabled");
+            $('#sendAgain').addClass('layui-btn-disabled');
+        }
+        $("#sendAgain").empty();
+        $('#sendAgain').append(text);
+    }
+
+    wait = 60;
+
+    function timeClock() {
+        var o = documentgetElementById('sendAgain');
+        if (wait == 0) {
+            o.removeAttribute("disabled");
+            o.innerHTML = "获取验证码";
+            wait = 60;
+        } else {
+            o.setAttribute("disabled", true);
+            o.innerHTML = wait + "秒后重新发送";
+            wait--;
+            setTimeout(function() {
+                timeClock(o)
+            }, 1000)
+        }
+    }
+
+    function checkPhone() {
+        var tel = $('#phoneNum').val();
+        var captcha = $('#captcha').val();
+        var userKey = $('#userKey').val();
+        $.ajax({
+            url: 'https://www.guanwuxiaoer.com/hscode.php?mod=check',
+            type: 'post',
+            data: { tel: tel, captcha: captcha, key: userKey },
+            success: function(res) {
+                var res = JSON.parse(res);
+                if (res.code == 200 && res.msg == 'set_pass') {
+                    $('.bind_phone').hide();
+                    $('.setpassArea').show();
+                    $('#checkCode').val(res.check);
+                } else if (res.code == 200 && res.msg == 'login_success') {
+                    window.location.href = 'https://www.guanwuxiaoer.com/hscode.php';
+                } else {
+                    layAlert(res.msg);
+                    return;
+                }
+            }
+        });
+    }
+    function clearAllTimer(timerR){
+        for(var each in timerR){
+            console.log('stoping:'+timerR[each]);
+            var sss = window.clearInterval(timerR[each]);
+            console.log('stoped:'+sss);
+        }
+    }
+
+    /**
+     * 手机验证码 end
+     */
+    if($(".searchRange").length){
+        $(".searchRange").append('<span class="menuhot">热</span>')
+    }
+
+</script>
+
+<style type="text/css">
+    .searchRange{
+        position: relative;
+    }
+    .menuhot{
+        position: absolute;
+        top: -10px;
+        left: 440px;
+        background: #efa500;
+        color: #fff;
+        padding: 2px 10px;
+        z-index: 9;
+        box-shadow: 1px 2px 5px rgb(255 255 255 / 20%);
+        border-radius:11px 11px 11px 0px;
+        background: rgba(240,47,23,1);
+        background: -moz-linear-gradient(45deg, rgba(240,47,23,1) 0%, rgba(248,80,50,1) 59%, rgba(241,111,92,1) 100%);
+        background: -webkit-gradient(left bottom, right top, color-stop(0%, rgba(240,47,23,1)), color-stop(59%, rgba(248,80,50,1)), color-stop(100%, rgba(241,111,92,1)));
+        background: -webkit-linear-gradient(45deg, rgba(240,47,23,1) 0%, rgba(248,80,50,1) 59%, rgba(241,111,92,1) 100%);
+        background: -o-linear-gradient(45deg, rgba(240,47,23,1) 0%, rgba(248,80,50,1) 59%, rgba(241,111,92,1) 100%);
+        background: -ms-linear-gradient(45deg, rgba(240,47,23,1) 0%, rgba(248,80,50,1) 59%, rgba(241,111,92,1) 100%);
+        background: linear-gradient(45deg, rgba(240,47,23,1) 0%, rgba(248,80,50,1) 59%, rgba(241,111,92,1) 100%);
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f02f17', endColorstr='#f16f5c', GradientType=1 );
+    }
+</style>
+<!-- <a id='jumpToContrast' target="_blank" href="">&nbsp;123123123</a> -->
+
+<div id="tooltip" style="position: fixed; z-index: 2000; left: 1419.39px; top: 146.719px; display: none;"></div>
+
+
+
+<script src="/static/js/public.js" type="text/javascript"></script>
+<script src="/static/hscode/js/hscodesEns.v2022.js"></script><div style="display:none;"><div><div><input id="rinp_" type="hidden" value="SkpFVW16M3NxN3V1SDVwVStvNDVVQTg1OVZTUnVPNjM0ZUVnMUh5aXo4d0NXQ0lOYnZFcDhUTThuRTZFa2tzT0l1MFIxVC9CTTlwenNQYlVYYlQzamxPdEdRUDNuK2czYkhpcjRLN1BnRTZoeXd1Y1JuVWpZS1NQRlNVdXFOUWNlaFRib1Bzc0EyTHZqOFlWMUx1Z2Z4SFd1aDNDZ3JtK2piNHVGS3dtZFI0R0huRmhkdGpVSDZBUW9vT0dNTHNwNFpkcTZNV05TL2h5Tm1FMWcyaVMrcCt3Slh3R1FjWWlIWEh2UDBMOW5xZmVHTkhYdXRITHdyblJRVlY0M2lyd0hlVWhSTUw5OStPZFNMQ09hUnMxcnVKaFZmL1ZsVERDKytaRUFVM0NnanFrZHFLSTZsVmt0TXBhcHVRVGw0QmNxeHpPblJUWWpNWUY3dXVVRVJhdmVnPT0="></div></div></div>
+<script>
+    var bindWechatTimer;
+    var uid = "105359";
+
+    checkPower();
+    function checkPower(){
+        var power = "1";
+        var ip = "";
+        console.log(power);
+        console.log(ip);
+    }
+
+
+    function requestApi(url,type,param){
+        var result = '';
+        $.ajax({
+            url:url,
+            type:type,
+            data:param,
+            async:false,
+            success:function(res){
+                if(typeof(res) == 'string'){
+                    res = JSON.parse(res);
+                }
+                result = res;
+            }
+        });
+        return result;
+    }
+
+    getHsCodeSearch();
+    //默认查询
+    function getHsCodeSearch(){
+        layui.use(['layer'], function(){
+            var layer = layui.layer;
+            var loadIndex = layer.load(2, {time: 10*1000});
+            var key = $('#btn').val();
+            var expiresIndex = $('#expiresIndex').prop('checked');
+            var param = {key:key,x:gtoKey,is_expires:expiresIndex};
+            var res = getDataApi(param);
+            layer.close(loadIndex);
+            datalist(res);
+            page(res,1);
+            if(res.code == 500){
+                noPower(res);return;
+            }
+            // 判断查询的是code计入历史记录
+            if(key && /^\d*$/.test(key)){
+                if(window.localStorage.getItem("memoryItems")){
+                    var itemsArrStr = window.localStorage.getItem("memoryItems")
+                    var itemsArr = itemsArrStr.split(",")
+                    if(itemsArr.indexOf(key)==-1){
+                        itemsArr.unshift(key)
+                    }
+                    window.localStorage.setItem("memoryItems",itemsArr.join(","))
+                    $("#memoryItemBox").empty()
+                    var htmlStr ='';
+                    for(var i=0; i<itemsArr.length; i++){
+                        htmlStr+= '<div class="item">'
+                            +'<span class="code">'+itemsArr[i]+'</span>'
+                            +'<span class="del">×</span>'
+                            +'</div>'
+                    }
+                    $("#memoryItemBox").html(htmlStr)
+                }else{
+                    window.localStorage.setItem("memoryItems",key)
+                    $("#memoryItemBox").html('<div class="item">'
+                        +'<span class="code">'+key+'</span>'
+                        +'<span class="del">×</span>'
+                        +'</div>')
+                }
+                localMemoryArrStr = window.localStorage.getItem("memoryItems")
+            }
+        });
+    }
+
+    //查询功能
+    function getDataApi(param){
+        var url = 'https://api.guanwuxiaoer.com/api/hscode/hsCodeSearch';
+        var type = 'post';
+        var res = requestApi(url,type,param);
+        var t = typeof(res);
+        if(t == 'string'){
+            var res =  JSON.parse(res);
+        }
+        return res;
+    }
+
+    //生成表格列表数据
+    function datalist(res){
+        var tableHtml = '';
+        $('#table').empty();
+        var head = '<thead>';
+        head += "<tr>";
+        head += "<th style='width:8%;font-weight:bold;'>海关编码</th>";
+        head += "<th style='width:22%;font-weight:bold;'>货物名称</th>";
+        head += "<th style='width:8%;font-weight:bold;'>历史实例</th>";
+        head += "<th style='width:6%;font-weight:bold;'>进口最惠税</th>";
+        head += "<th style='width:8%;font-weight:bold;'>进口暂定税</th>";
+        head += "<th style='width:8%;font-weight:bold;'>进口增值税</th>";
+        // head += "<th style='width:6%;font-weight:bold;'>出口退税率</th>";
+        head += "<th style='width:7%;font-weight:bold;'>计量单位</th>";
+        head += "<th style='width:7%;font-weight:bold;'>监管条件</th>";
+        head += "<th style='width:7%;font-weight:bold;'>检验检疫</th>";
+        head += "<th style='width:20%;font-weight:bold;'>操作</th>";
+        head += '</tr>';
+        head += '</thead>';
+        tableHtml += head;
+        var t = typeof(res);
+        sessionStorage.setItem('resultData',JSON.stringify(res));
+        var tableContent = $('#table').text();
+        if(tableContent != ''){
+            //解决退出账号后，页面无数据展示的问题
+            if(res.code == 500){
+                noPower(res);return;
+            }
+        }
+
+        var dt = res.hasOwnProperty('data');
+        if(dt){
+            if(res.data.length == 0 ){
+                console.log('122')
+                tableHtml += '<tr><td colspan="10" style="text-align:center;"><img style="padding:100px;" src="/static/image/nodata.png"></td></tr>';
+            }else{
+                $.each(res.data,function(k,v){
+                    // console.log(v);
+                    // console.log(v.hs_code);
+                    var bodyHtml = '<tr class="tr_'+v.hs_code+'">';
+                    if(v.is_expires == 2){
+                        bodyHtml += '<td>'+v.hs_code+' <span class="expiresCode">[过期]</span></td>';
+                    }else{
+                        bodyHtml += '<td>'+v.hs_code+'</td>';
+                    }
+                    if(v.spec_mode){
+                        // bodyHtml += '<td>'+v.hs_name+'<p class="codeSpec"><span title="历史申报实例,仅供参考">例</span>'+ v.spec_mode +'</p></td>';
+                        bodyHtml += '<td>'+v.hs_name+'</td>';
+                    }else{
+                        bodyHtml += '<td>'+v.hs_name+'</td>';
+                    }
+                    var searchKey = $('.searchInput').val();
+
+                    if(v.search_name != undefined){
+                        sessionStorage.setItem('lssl_'+k,v.search_name);
+                    }
+                    if(v.num != undefined){
+                        var vnum = v.num;
+                    }else{
+                        var vnum = '*';
+                    }
+
+                    if(searchKey == ''){
+                        bodyHtml += '<td style="cursor:pointer;"  onclick="showSbysCase(\''+v.hs_code+'\',\''+k+'\')">（'+vnum+'条）'+'</td>';
+                    }else{
+                        bodyHtml += '<td style="cursor:pointer;"  onclick="showSbysCase(\''+v.hs_code+'\',\''+k+'\')">（'+vnum+'条）'+v.search_name_html+'</td>';
+                    }
+
+                    bodyHtml += '<td>'+v.discount_tax+'</td>';
+                    if(v.import_tax == '0'){
+                        bodyHtml += '<td>'+v.import_tax+'%</td>';
+                    }else{
+                        if(v.import_tax == '待更新'){
+                            bodyHtml += '<td></td>';
+                        }else{
+                            bodyHtml += '<td>'+v.import_tax+'</td>';
+                        }
+                    }
+                    bodyHtml += '<td>'+v.added_tax+'</td>';
+                    // bodyHtml += '<td>'+v.rebateRate+'</td>';
+                    bodyHtml += '<td>'+v.unit+'</td>';
+                    if(v.condition == null ){
+                        bodyHtml += '<td>无</td>';
+                    }else{
+                        bodyHtml += '<td class="jyjy_'+v.hs_code+'" style="color:#3388ff;cursor:pointer;" onmouseover="getDetailTips(\''+v.condition+'\',\'jyjy\',$(this))">'+v.condition+'</td>';
+                    }
+                    if(v.ciq_catelog == null ){
+                        bodyHtml += '<td>无</td>';
+                    }else{
+                        bodyHtml += '<td class="ciq_'+v.hs_code+'" style="color:#3388ff;cursor:pointer;" onmouseover="getDetailTips(\''+v.ciq_catelog+'\',\'ciq\',$(this))">'+v.ciq_catelog+'</td>';
+                    }
+
+                    bodyHtml += '<td class="operate_column" style=\'color:#3388ff;font-size:10px !important;\' ><a style="color:#3388ff;" href="javascript:void(0)" data-on="1" onclick="getDetail($(this),\''+v.hs_code+'\')">详情▼</a>&nbsp;&nbsp;<span style="cursor:pointer;" onclick="showHsCode(\''+v.hs_code+'\')">申报要素</span>&nbsp;&nbsp;&nbsp;<span style="cursor:pointer;" onclick="showSbysCase(\''+v.hs_code+'\')">申报实例</span>&nbsp;&nbsp;&nbsp;<span class="layui-btn layui-btn-xs contrastBgColor contrast_'+v.hs_code+'" data-value="'+v.hs_code+'" onclick="contrastHsCode($(this))" title="点此将HS编码 '+v.hs_code+' 列入对比，可对比不同编码的进出口税率、申报要素等信息">对比</span><span class="layui-btn layui-btn-xs layui-btn-normal subscribeToHscode" onclick="subscribeCode(\''+v.hs_code+'\')" title="点此订阅HS编码 '+v.hs_code+'变更动态，编码增删/监管条件/申报要素/税率/检验检疫有变更时立即通知你">订阅</span></td></tr>';
+                    tableHtml += bodyHtml;
+                });
+            }
+
+            $('#table').append(tableHtml);
+            changecontrast_type();
+            generateWaterBySbysCase( nowDate+userStr,'关务小二 ','search');
+        }
+    }
+
+    //对比功能
+    function contrastHsCode(obj){
+        var hscode = obj.data('value');
+        var hscodearr = $('#hscodearr').val();
+        var objDoing = obj.text();
+        if(objDoing == '对比'){
+            if(hscodearr == ''){
+                $('#hscodearr').val(hscode+'|');
+                var html = '<div class="hscode_div"><span>'+hscode+'</span><span data-value="'+hscode+'" onclick="delHsCode($(this))" class="XXX"></span></div>';
+                $('.chooseHscodeList').append(html);
+                obj.empty();
+                obj.text('取消');
+                obj.addClass('qx');
+            }else{
+                var hscodelist = hscodearr.split('|');
+                var num = hscodelist.length;
+                var a = '';
+                // console.log(hscodelist);
+                $.each(hscodelist,function(k,v){
+                    if(v == hscode ){
+                        obj.empty();
+                        obj.text('取消');
+                        obj.addClass('qx');
+                        // console.log('isset');
+                        eachHscodeList();
+                        return;
+                    }
+                });
+                var i = 0;
+                $.each(hscodelist,function(k,v){
+                    if(v == ''){
+
+                    }else{
+                        i++;
+                    }
+                });
+                if(i >= 5 ){
+                    layer.msg('最多只能选择5个编码');return;
+                }
+                var str = hscodearr+hscode+'|';
+                $('#hscodearr').val(str);
+                obj.empty();
+                obj.text('取消');
+                obj.addClass('qx');
+            }
+        }else if(objDoing == '取消'){
+            var hscodelist = hscodearr.split('|');
+            var aStr = '';
+            $.each(hscodelist,function(k,v){
+                if(v == hscode){
+
+                }else{
+                    aStr += v+'|';
+                }
+            });
+            $('#hscodearr').val(aStr);
+            obj.empty();
+            obj.text('对比');
+            obj.removeClass('qx');
+        };
+        $('.rightMenu').show();
+        eachHscodeList();
+        $('.rightMenuAllRange').show();
+        $('.headerRightMenu').click();
+    }
+
+
+    //对比功能选择编码后，在右边悬浮菜单里的编码对比中显示编码(用户选中的、要对比的编码)
+    function eachHscodeList(){
+        var hscodearr = $('#hscodearr').val();
+        $('.chooseHscodeList').empty();
+        var arr = hscodearr.split('|');
+        // console.log(arr);
+        var html = '';
+        $.each(arr,function(k,v){
+            if(v == ''){
+
+            }else{
+                html += '<div class="hscode_div"><span>'+v+'</span><span data-value="'+v+'" onclick="delHsCode($(this))" class="XXX"></span></div>';
+            }
+        });
+        $('.chooseHscodeList').append(html);
+    }
+
+    var tipsTimer = '';
+    var tipsIndex = '';
+    // 定义水印所需的变量 generateWater
+    var dateObj = new Date();
+    var nowDate = dateObj.getFullYear()+'-'+(dateObj.getMonth()+1)+'-'+dateObj.getDate()+' ';
+    var uid = "105359";
+    var username = "donaldyyyy";
+    var userStr = '';
+    if(username){
+        userStr = uid
+    }
+
+    //详情功能
+    function getDetail(obj,hscode){
+        var res = sessionStorage.getItem('resultData');
+        var res = JSON.parse(res);
+        var onoff = obj.data('on');
+        if(onoff == 1){ // 展开详情
+            var loadingWindow = layer.msg('加载中', {
+                icon: 16
+                ,shade: 0.01
+            });
+            obj.parents("tr").addClass('activeTr')
+            var objTr = obj.parent().parent('tr');
+            var tdObj = objTr.find('td');
+            var len = tdObj.length;
+            obj.parent('td').css('border-right','2px dashed #3388ff');
+            obj.parent().parent().children('td').eq(1).find('.codeSpec').css('color','#fff');
+            $.each(tdObj,function(k,v){
+                $(v).css('border-top','2px dashed #3388ff');
+                if(k==0){
+                    $(v).css('border-left','2px dashed #3388ff');
+                }
+            });
+
+            $.each(res.data,function(k,v){
+                if(v.hs_code == hscode ){
+                    var tableDetail = getTaxesInfo(v);
+                    var hsName = v.description;
+                    // consolel.log(tableDetail);
+                    var htmlArr = getSbysInfo(hscode,hsName);
+                    //**********************申报要素信息**************START************//
+                    var sbysHtml = htmlArr['sbys'];
+                    //**********************申报要素信息**************END************//
+                    //**********************检验检疫信息**************START************//
+                    var ciqHtml = htmlArr['ciq'];
+                    //**********************检验检疫信息**************END************//
+                    var html = '<tr class="detail detail_'+hscode+'">';
+                    html += '<td class="infoContent" colspan="10">';
+                    html += '<div class="layui-row">';
+                    // html += '<div class="sideBar">'
+                    //     +'<div style="background:#1E9FFF">基本信息</div>'
+                    //     +'<div style="background:#ff5722">进口税率</div>'
+                    //     +'<div style="background:#673ab7">出口税率</div>'
+                    //     +'<div style="background:#4caf50">申报要素</div></div>';
+                    html += tableDetail + sbysHtml + ciqHtml;
+                    html += '</div>';
+                    html += '</td></tr>';
+                    obj.parents("tr").after(html);
+                    obj.empty();
+                    obj.append('详情▲');
+                    obj.data('on','2');
+                    return false;
+                }
+            });
+
+            layer.close(loadingWindow);
+
+            // 添加水印
+            generateWater( nowDate+userStr,'关务小二 ',hscode)
+        }else if(onoff == 2){ // 隐藏详情
+            var objTr = obj.parent().parent('tr');
+            var tdObj = objTr.find('td');
+            var len = tdObj.length;
+            obj.parent('td').css('border-right','1px solid #e6e6e6');
+            $.each(tdObj,function(k,v){
+                $(v).css('border-top','1px solid #e6e6e6');
+                if(k==0){
+                    $(v).css('border-left','1px solid #e6e6e6');
+                }
+            });
+            obj.parent().parent().children('td').eq(1).find('.codeSpec').css('color','#898989');
+            obj.parents("tr").removeClass('activeTr');
+            obj.parents("tr").next("tr").remove();
+            obj.empty();
+            obj.append('详情▼');
+            obj.data('on','1');
+        }
+    }
+
+    // 根据 参数字符串 创建图片水印 text1 - 日期，text2 - 用户
+    function generateWater(text1,text2,hscode){
+        if(!text1 || !text2)return
+        var can = document.createElement('canvas');
+        //   var report = $(".infoContent .layui-row")[0];
+        var report = $(".detail_"+hscode).find(".layui-row")[0];
+        if(!report)return
+        report.appendChild(can);
+        //can.width = 360;
+        can.height = 240;
+        can.style.display = 'none';
+        can.style.zIndex = '999'
+
+        var cans = can.getContext('2d');
+        cans.rotate(-25 * Math.PI / 180);
+        cans.font = "400 13px Microsoft YaHei";
+        cans.fillStyle = "#eee";
+        cans.textAlign = 'center';
+        cans.textBaseline = 'Middle';
+        if(cans.measureText(text1).width > 300) {
+            // var size = 300 / text1.length
+            cans.font = '400 ' +'13px '+ ' Microsoft YaHei'
+        }
+        cans.fillText(text1, 80, 110);
+        cans.fillText(text2, 80, 130);
+        report.style.backgroundImage = "url(" + can.toDataURL("image/png") + ")";
+        report.style.backgroundColor = "#fff";
+    }
+
+    // type - 适用不同地方水印
+    // text1 text2 水印文字
+    function generateWaterBySbysCase(text1,text2,type){
+        if(!text1 || !text2)return
+        var can = document.createElement('canvas');
+        //   var report = $(".infoContent .layui-row")[0];
+        var report;
+        if(type){
+            if(type=="hs"){
+                report = $("#hsCodeDialog .layui-table-body")[0];
+            }
+            if(type=="tax"){
+                report = $("#ImportTaxesWindow")[0];
+            }
+            if(type=="search"){
+                report = $("#table")[0];
+            }
+            if(type=='xddetail'){
+                report = $('#convertationWindow .layui-table')[0];
+            }
+        }else{
+            report = $(".sbysCaseContent")[0];
+        }
+        if(!report)return
+        report.appendChild(can);
+        //can.width = 360;
+        can.height = (type) ? 120 :240;
+        can.style.display = 'none';
+        can.style.zIndex = '999'
+        var cans = can.getContext('2d');
+        cans.rotate(-25 * Math.PI / 180);
+        cans.font = "400 13px Microsoft YaHei";
+        cans.fillStyle = "#eee";
+        cans.textAlign = 'center';
+        cans.textBaseline = 'Middle';
+        if(cans.measureText(text1).width > 300) {
+            // var size = 300 / text1.length
+            cans.font = '400 ' +'13px '+ ' Microsoft YaHei'
+        }
+        cans.fillText(text1, 80, 110);
+        cans.fillText(text2, 80, 130);
+        report.style.backgroundImage = "url(" + can.toDataURL("image/png") + ")";
+    }
+
+    //协定速率处理
+    function getTaxesInfo(v){
+        var index = 1;var xdLine = 8;var rowpanLine = 3;
+        var convertationHtml='',convertationHeaderHtml='',convertationContentHtml='';
+        var converArr = JSON.parse(v.queryAgreementRate);
+        console.log(converArr);
+        if(converArr == null || converArr == 'null' || converArr.data == [] || converArr.data == null || converArr.data.length == 0){
+            convertationHtml = '<tr><td colspan="8" style="text-align:center;">无</td></tr>';
+            rowpanLine++;
+        }else{
+            var offsetIndex = converArr.totalCount % 4;
+            if(offsetIndex != 0 ){
+                offsetIndex = (( 4 - offsetIndex ) * 2 ) + 1;
+            }
+            var dataArr = converArr.data;
+            // 排序 从小到大
+            for(var i=0;i<dataArr.length-1;i++){
+                for(var j=0;j<dataArr.length-1-i;j++){
+                    if(Number(dataArr[j].agreementCode)> Number(dataArr[j+1].agreementCode)){
+                        var temp = dataArr[j];
+                        dataArr[j] = dataArr[j+1];
+                        dataArr[j+1] = temp
+                    }
+                }
+            }
+            if(converArr.totalCount > 4 ){
+                console.log('>');
+                $.each(dataArr,function(key,val){
+                    var detailObj = {
+                        xdcyg: val.XDCYG, //协定成员国及地区：
+                        xdqc: val.XDQC, //协定全称
+                        jkycdz: val.JKYCDZ, //进口原产地证
+                        ckycdz : val.CKYCDZ, //出口原产地证
+                        ycdzlwzt : val.YCDZLWZT, //原产地证联网状态
+                        remark : val.REMARK //备注
+                    }
+                    var detailStr = JSON.stringify(detailObj).replace(/"/g,"&quot;");
+                    // console.log(detailStr);
+                    if(index == 1){
+                        convertationHeaderHtml += '<tr onmouseover="hoverforTitle(\''+v.hs_code+'\',2)" onmouseout="outhoverforTitle(\''+v.hs_code+'\',2)">';
+                    }
+                    if((converArr.totalCount - 1) == key){
+                        if(val.agreementCode != '' && val.agreementCode != undefined ){
+                            var codeIndex = '['+val.agreementCode+']';
+                        }else{
+                            var codeIndex = '';
+                        }
+                        convertationHeaderHtml += '<td style="cursor:pointer;" onmouseenter="showTaxDetail(\''+detailStr+'\',this,event)" onmouseleave="hideTaxDetail(this)" onclick="showXdContent(\''+v.hs_code+'\',\''+val.agreementCode+'\',\''+val.agreementName+'\')">'
+                            +'<span class="codeStyle">'+codeIndex+'</span>'
+                            +val.agreementName
+                            +'</td>'
+                            +'<td  colspan="'+offsetIndex+'" onclick="showXdContent(\''+v.hs_code+'\',\''+val.agreementCode+'\',\''+val.agreementName+'\')">'
+                            +'<a class="conventationTaxes">'
+                            +val.impAgreementRate+'</a>'
+                            +'</td>';
+                    }else{
+                        if(val.agreementCode != '' && val.agreementCode != undefined ){
+                            var codeIndex = '['+val.agreementCode+']';
+                        }else{
+                            var codeIndex = '';
+                        }
+                        convertationHeaderHtml += '<td style="cursor:pointer;" onmouseenter="showTaxDetail(\''+detailStr+'\',this,event)" onmouseleave="hideTaxDetail(this)" onclick="showXdContent(\''+v.hs_code+'\',\''+val.agreementCode+'\',\''+val.agreementName+'\')">'
+                            +'<span class="codeStyle">'+codeIndex+'</span>'
+                            +val.agreementName
+                            +'</td>'
+                            +'<td onclick="showXdContent(\''+v.hs_code+'\',\''+val.agreementCode+'\',\''+val.agreementName+'\')">'
+                            +'<a class="conventationTaxes">'
+                            +val.impAgreementRate+'</a>'
+                            +'</td>';
+                    }
+
+                    if(index == 4){
+                        convertationHeaderHtml += '</tr>';
+                        index = 0;rowpanLine++;
+                    }
+                    index++;
+                });
+            }else{
+                convertationHeaderHtml += '<tr onmouseover="hoverforTitle(\''+v.hs_code+'\',2)" onmouseout="outhoverforTitle(\''+v.hs_code+'\',2)">';
+                $.each(dataArr,function(key,val){
+                    if((converArr.totalCount - 1) == key){
+                        convertationHeaderHtml += '<td style="cursor:pointer;" onclick="showXdContent(\''+v.hs_code+'\',\''+val.agreementCode+'\',\''+val.agreementName+'\')"><span class="codeStyle">['+val.agreementCode+'] </span>'+val.agreementName+'</td><td  colspan="'+offsetIndex+'" onclick="showXdContent(\''+v.hs_code+'\',\''+val.agreementCode+'\',\''+val.agreementName+'\')"><a class="conventationTaxes">'+val.impAgreementRate+'</a></td>';
+                    }else{
+                        convertationHeaderHtml += '<td style="cursor:pointer;" onclick="showXdContent(\''+v.hs_code+'\',\''+val.agreementCode+'\',\''+val.agreementName+'\')"><span class="codeStyle">['+val.agreementCode+'] </span>'+val.agreementName+'</td><td onclick="showXdContent(\''+v.hs_code+'\',\''+val.agreementCode+'\',\''+val.agreementName+'\')"><a class="conventationTaxes">'+val.impAgreementRate+'</a></td>';
+                    }
+                });
+                convertationHeaderHtml += '</tr>';
+                rowpanLine++;
+            }
+            var lastStr = convertationHeaderHtml.substr(-5,5);
+            // console.log(lastStr);
+            if(lastStr == '</td>'){
+                convertationHeaderHtml += '</tr>';
+                rowpanLine++;
+            }
+            convertationHtml = convertationHeaderHtml;
+        }
+
+        v.first_uom = checkNull(v.first_uom);
+        v.second_uom = checkNull(v.second_uom);
+        v.condition = checkNull(v.condition);
+        v.ciq_catelog = checkNull(v.ciq_catelog);
+        v.discount_tax = checkNull(v.discount_tax);
+        v.general_tax = checkNull(v.general_tax);
+        v.import_tax = checkNull(v.import_tax);
+        v.sale_tax = checkNull(v.sale_tax);
+        v.added_tax = checkNull(v.added_tax);
+        v.export_tax = checkNull(v.export_tax);
+        v.expTempRate = checkNull(v.expTempRate);
+
+        var tableDetail = '<span class="layui-badge layui-bg-blue labelForTable">商品信息及税率</span><a target="_blank" href="https://www.guanwuxiaoer.com/thread-570-1-1.html" style="display:inline-block;padding:0 5px;cursor:pointer;color:#1E9FFF;"><svg style="display: inline-block;padding: 0 5px;cursor: pointer;vertical-align: middle;" t="1603784206639" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5187" width="20" height="20"><path d="M528.32 28.352l5.312 1.408 373.376 113.152c29.952 9.088 50.944 35.84 52.864 66.752L960 214.4v407.872c0 183.872-145.856 314.624-426.112 393.6L512 1021.824l-9.792-2.688c-284.16-77.44-433.92-206.72-438.144-389.12L64 622.272V214.4c0-31.36 19.52-59.136 48.64-69.952l4.352-1.472L490.368 29.76c12.288-3.712 25.408-4.224 37.952-1.408z m265.088 318.464H510.336v220.16h46.592c-3.136 77.44-17.856 146.688-44.032 207.808l57.792 24.768 6.08-14.656c25.792-65.344 40.128-138.048 43.072-217.856l63.488-0.064v125.824l0.192 5.568a94.4 94.4 0 0 0 94.208 88.832h47.168v-62.912h-47.168l-3.712-0.256a31.488 31.488 0 0 1-27.776-31.232V567.04h47.168V346.88zM473.728 252.8l-11.008 1.728c-59.712 9.024-138.24 13.568-235.52 13.568v62.912h18.56c26.688-0.192 51.968-0.704 75.904-1.6v48.768H227.2v62.912h94.336V787.2h62.912V441.152h94.4V378.24H384.512l0.064-52.096c37.312-2.624 70.4-6.4 99.456-11.2l-10.304-62.08zM290.176 472.64H227.2l-0.256 34.944a2532.864 2532.864 0 0 1-15.36 244.672l62.592 6.912 3.712-35.84c8.128-83.52 12.16-167.104 12.16-250.688z m188.736 0H416v283.072h62.912V472.64z m251.584-62.912v94.336H573.248V409.728h157.248z m-110.08-157.312H526.08v62.912h94.336v-62.912z m157.312 0h-94.4v62.912h94.4v-62.912z" fill="#1E9FFF" p-id="5188"></path></svg>各类税率的区别与适用</a>';
+        tableDetail += '<button type="button" class="layui-btn layui-btn-sm" style="position: absolute;right: 15px;top: 8px;" onclick="downloadImg(\''+v.hs_code+'\')"> <i class="layui-icon layui-icon-download-circle layui-font-12"></i>一键截图</button>';
+        tableDetail += '<table style="width:100%;margin-bottom:8px;">';
+        tableDetail += '<tr onmouseover="hoverforTitle(\''+v.hs_code+'\',1)" onmouseout="outhoverforTitle(\''+v.hs_code+'\',1)">';
+        tableDetail += '<td rowspan="2" id="normalMessage_'+v.hs_code+'" class="detailTitle normalInfo" style="width:7%;">基本信息</td>';
+        tableDetail += '<td >商品描述</td>';
+        if(v.en == null ){
+            var enStr = '';
+        }else{
+            var enStr = v.en;
+        }
+        if(v.description == ''){
+            var goodsName = v.hs_name + '<br/>'+ enStr;
+        }else{
+            var goodsName = v.description +'<br/>'+ enStr;
+        }
+        tableDetail += '<td colspan="7">'+goodsName+'</td>';
+        // tableDetail += '<td >备注</td>';
+        // tableDetail += '<td colspan="3">'+v.note+'</td>';
+        tableDetail += '</tr>';
+        tableDetail += '<tr onmouseover="hoverforTitle(\''+v.hs_code+'\',1)" onmouseout="outhoverforTitle(\''+v.hs_code+'\',1)">';
+        tableDetail += '<td >第一法定单位及代码</td>';
+        tableDetail += '<td>'+v.first_uom+'</td>';
+        tableDetail += '<td >第二法定单位及代码</td>';
+        tableDetail += '<td>'+v.second_uom+'</td>';
+        tableDetail += '<td >监管条件</td>';
+        tableDetail += '<td class="jyjy_'+v.hs_code+'" style="color:#3388ff;cursor:pointer;" onmouseover="getDetailTips(\''+v.condition+'\',\'jyjy\',$(this))">'+v.condition+'</td>';
+        tableDetail += '<td >检验检疫类别</td>';
+        tableDetail += '<td class="ciq_'+v.hs_code+'" style="color:#3388ff;cursor:pointer;" onmouseover="getDetailTips(\''+v.ciq_catelog+'\',\'ciq\',$(this))">'+v.ciq_catelog+'</td>';
+        tableDetail += '</tr>';
+        tableDetail += '<tr onmouseover="hoverforTitle(\''+v.hs_code+'\',2)" onmouseout="outhoverforTitle(\''+v.hs_code+'\',2)">';
+        tableDetail += '<td id="importTaxes_'+v.hs_code+'" rowspan="'+rowpanLine+'" class="detailTitle importTaxes">进口税率</td>';
+        tableDetail += '<td >进口最惠国税率</td>';
+        tableDetail += '<td class="detailTax">'+v.discount_tax+'</td>';
+        tableDetail += '<td >进口普通税率</td>';
+        tableDetail += '<td class="detailTax">'+v.general_tax+'</td>';
+        tableDetail += '<td >进口暂定税率</td>';
+        if(v.import_tax == '0'){
+            tableDetail += '<td class="detailTax">'+v.import_tax+'%</td>';
+        }else{
+            if(v.import_tax == '待更新'){
+                tableDetail += '<td class="detailTax">无</td>';
+            }else{
+                tableDetail += '<td class="detailTax">'+v.import_tax+'</td>';
+            }
+        }
+
+        tableDetail += '<td >进口消费税率</td>';
+        if(v.sale_tax == '0'){
+            tableDetail += '<td class="detailTax">'+v.sale_tax+'%</td>';
+        }else{
+            tableDetail += '<td class="detailTax">'+v.sale_tax+'</td>';
+        }
+        tableDetail += '</tr>';
+        tableDetail += '<tr onmouseover="hoverforTitle(\''+v.hs_code+'\',2)" onmouseout="outhoverforTitle(\''+v.hs_code+'\',2)">';
+        tableDetail += '<td >进口增值税率</td>';
+        tableDetail += '<td class="detailTax">'+v.added_tax+'</td>';
+        tableDetail += '<td >进口反倾销税率</td>';
+        if(v.fqx == '无'){
+            tableDetail += '<td class="detailTax">'+v.fqx+'</td>';
+        }else{
+            tableDetail += '<td class="detailTax showcontent" onclick="showContent(\'fqx\',\''+v.hs_code+'\')">'+v.fqx+'</td>';
+            sessionStorage.setItem('fqx_'+v.hs_code,v.queryAntiddutiesRate);
+        }
+
+        tableDetail += '<td >进口反补贴税率</td>';
+        if(v.fbt == '无'){
+            tableDetail += '<td class="detailTax">'+v.fbt+'</td>';
+        }else{
+            tableDetail += '<td class="detailTax showcontent" onclick="showContent(\'fbt\',\''+v.hs_code+'\')">'+v.fbt+'</td>';
+            sessionStorage.setItem('fbt_'+v.hs_code,v.queryCountervailingRate);
+        }
+
+        tableDetail += '<td >进口废弃电器电子基金/保障措施</td>';
+        if(v.fqdz == '无'){
+            tableDetail += '<td class="detailTax">'+v.fqdz+'</td>';
+        }else{
+            tableDetail += '<td class="detailTax showcontent" onclick="showContent(\'fqdz\',\''+v.hs_code+'\')">'+v.fqdz+'</td>';
+            sessionStorage.setItem('fqdz_'+v.hs_code,v.queryFundRate);
+        }
+        tableDetail += '</tr>';
+        tableDetail += '<tr onmouseover="hoverforTitle(\''+v.hs_code+'\',2)" onmouseout="outhoverforTitle(\''+v.hs_code+'\',2)">';
+        tableDetail += '<td colspan="'+xdLine+'"  style="text-align:center;font-weight:bold;">进口协定税率及协定代码</td>';
+        tableDetail += '</tr>';
+        tableDetail += convertationHtml;
+
+        tableDetail += '<tr onmouseover="hoverforTitle(\''+v.hs_code+'\',3)" onmouseout="outhoverforTitle(\''+v.hs_code+'\',3)">';
+        tableDetail += '<td id="exportTaxes_'+v.hs_code+'" class="detailTitle exportTaxes">出口税率</td>';
+        tableDetail += '<td >出口关税率</td>';
+        tableDetail += '<td class="detailTax">'+v.export_tax+'</td>';
+        tableDetail += '<td >出口暂定税率</td>';
+        tableDetail += '<td class="detailTax">'+v.expTempRate+'</td>';
+        tableDetail += '<td >出口退税率</td>';
+
+        var rebateRateContent = '';
+
+        if(v.rebateRate == '' || v.rebateRate == 'null' || v.rebateRate == null){
+            tableDetail += '<td colspan="3">无</td>';
+        }else{
+            var s = {};
+            s.rebateRate = v.rebateRate;
+            s.rebateRate_bak = v.rebateRate_bak;
+            var reRateClassName = 'reRate_'+v.hs_code;
+            sessionStorage.setItem(reRateClassName,JSON.stringify(s));
+
+            // var rebateRateArr = JSON.parse(v.rebateRate);
+            var rebateRateArr = JSON.parse(v.rebateRate_bak);
+            var rateTempArr = [];
+            $.each(rebateRateArr,function(reRateKey,reRateVal){
+                if(rateTempArr.indexOf(reRateVal.tax) == -1 ){
+                    rateTempArr.push(reRateVal.tax);
+                }
+                // rebateRateContent +=reRateVal.tax+' / ';
+            });
+            if(rateTempArr.length > 1){
+                var rateTempNewArr = Array.from(new Set(rateTempArr))
+                $.each(rateTempNewArr,function(rtk,rtv){
+                    rebateRateContent += rtv+' / ';
+                });
+                rebateRateContent = rebateRateContent.slice(0,-2);
+            }else{
+                rebateRateContent = rateTempArr[0];
+            }
+
+            // sessionStorage.setItem(reRateClassName,rebateRateTableHtml);
+            var rebateRateHtml = '<span class="'+reRateClassName+'" style="color:#3388ff;cursor:pointer;" onclick="getReRateTips(\''+v.hs_code+'\')"  >'+rebateRateContent+'&nbsp;&nbsp;<img style="width:30px;cursor:pointer;margin-bottom: 10px;"   src="/static/hscode/img/line_chart.svg" title="查看历史税率">&nbsp;查看历史税率</span><span>'+v.tsl_version+'</span>';
+            tableDetail += '<td class="detailTax" colspan="3">'+rebateRateHtml+'</td>';
+        }
+        tableDetail += '</tr>';
+        tableDetail += '</table>';
+        return tableDetail;
+    }
+
+    function jumpOutLineUrl(){
+        window.location.href='https://www.guanwuxiaoer.com/thread-570-1-1.html';
+    }
+
+    //获取退税率信息
+    function getReRateTips(hscode){
+        var url = 'https://api.guanwuxiaoer.com/api/hscode/getZslTsl';
+        var type = 'post';
+        var param = {hscode:hscode,x:gtoKey};
+        var res = requestApi(url,type,param);
+
+        if(res.code == 500){
+            noPower(res);return;
+        }
+
+        if(res.list == undefined){
+            layer.msg('暂无历史税率');return;
+        }
+
+        if(res != ''){
+            var rebateRateTableHtml = '';
+            rebateRateTableHtml += '<table class="layui-table">';
+            rebateRateTableHtml += '<tr>';
+            rebateRateTableHtml += '<th style="width:13%;">国税局退税代码</th>';
+            rebateRateTableHtml += '<th style="width:51%;">商品名称</th>';
+            rebateRateTableHtml += '<th style="width:12%;">增值税征税率(%)</th>';
+            rebateRateTableHtml += '<th style="width:12%;">出口退税率(%)</th>';
+            rebateRateTableHtml += '<th style="width:12%;">历史税率变化</th>';
+            rebateRateTableHtml += '</tr>';
+            $.each(res.list,function(bakKey,bakVal){
+                rebateRateTableHtml += '<tr>';
+                rebateRateTableHtml += '<td>'+bakVal.hs_code+'</td>';
+                rebateRateTableHtml += '<td>'+bakVal.name+'</td>';
+                rebateRateTableHtml += '<td>'+bakVal.zsl+'</td>';
+                rebateRateTableHtml += '<td>'+bakVal.tsl+'</td>';
+                rebateRateTableHtml += '<td><img style="width:30px;cursor:pointer;" onclick="showLineChart(\''+bakVal.hs_code+'\')" src="/static/hscode/img/line_chart.svg" title="查看历史税率"></td>';
+                // rebateRateTableHtml += '<td id="EchartMain_'+bakVal.hs_code+'"></td>';
+                rebateRateTableHtml += '</tr>';
+            });
+            rebateRateTableHtml += '</table>';
+            rebateRateTableHtml += '<div style="width:900px;height:300px;display:block;" id="EchartMain"></div>';
+
+            layer.open({
+                type: 1,
+                title: '退税率详情',
+                shadeClose: true,
+                shade: false,
+                // maxmin: true, //开启最大化最小化按钮
+                area: ['993px', '500px'],
+                content: rebateRateTableHtml,
+            });
+            setEchart('EchartMain',res,hscode);
+        }
+    }
+
+    //历史税率编码Echart折线图生成方法
+    function showLineChart(hscode){
+        var url = 'https://api.guanwuxiaoer.com/api/hscode/getZslTsl';
+        var type = 'post';
+        var param = {hscode:hscode,x:gtoKey};
+        var res = requestApi(url,type,param);
+        if(res.code == 500){
+            noPower(res);return;
+        }
+        setEchart('EchartMain',res,hscode);
+    }
+
+    //根据参数生成折线图
+    function setEchart(id,arr,hscode){
+        var arr = arr || false;
+        var chartDom = document.getElementById(id);
+        var myChart = echarts.init(chartDom);
+        var option;
+
+        option = {
+            title: {
+                text: hscode+'征税率、退税率折线图'
+            },
+            tooltip: {
+                trigger: 'axis'
+            },
+            legend: {
+                // data: ['邮件营销', '联盟广告', '视频广告', '直接访问', '搜索引擎']
+                data: ['增值税征税率', '退税率']
+            },
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true
+            },
+            toolbox: {
+                // feature: {
+                //     mark : {show: true},
+                //     restore : {show: true},
+                //     saveAsImage : {
+                //         show: true,
+                //         pixelRatio: 1,
+                //         title : '保存',
+                //         type : 'png',
+                //         lang : ['点击保存']
+                //     }
+                // }
+            },
+            xAxis: {
+                type: 'category',
+                boundaryGap: false,
+                // data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
+                data: arr.start_date,
+            },
+            yAxis: {
+                type: 'value'
+            },
+            series: [
+                {
+                    name: '增值税征税率',
+                    type: 'line',
+                    // stack: '总量',
+                    data: arr.zsl,
+                    itemStyle:
+                        {
+                            normal:
+                                {
+                                    label:
+                                        {
+                                            show:true
+                                        }
+                                }
+                        }
+                },
+                {
+                    name: '退税率',
+                    type: 'line',
+                    // stack: '总量',
+                    data: arr.tsl,
+                    itemStyle:
+                        {
+                            normal:
+                                {
+                                    label:
+                                        {
+                                            show:true
+                                        }
+                                }
+                        }
+                },
+            ],
+            graphic: [
+                {
+                    type: 'text',
+                    silent:false,
+                    left: 'center',
+                    top: 'middle',
+                    style: {
+                        fill: '#F2F6FC',
+                        text: [
+                            '关务小二'
+                        ].join('\n'),
+                        fontSize:100
+                    }
+                }
+            ],
+        };
+        option && myChart.setOption(option);
+        $('#'+id).resize(function () {
+            myChart.resize();
+        });
+    }
+
+    //检查是否为空，统一转换成字符串“无”
+    function checkNull(stringStr){
+        if(stringStr == '' || stringStr == null || stringStr == undefined ){
+            stringStr = '无';
+        }
+        return stringStr;
+    }
+
+
+    //关闭tips框
+    function closeTips(){
+        layer.closeAll('tips');
+    }
+
+    function showChange(hscode,t){
+        if(t == 1){
+            $('.sbys_table_'+hscode).hide();
+            $('.sbys_line_'+hscode).show();
+            $('.sbys_line_num_'+hscode).show();
+        }else{
+            $('.sbys_table_'+hscode).show();
+            $('.sbys_line_'+hscode).hide();
+            $('.sbys_line_num_'+hscode).hide();
+        }
+    }
+
+    function copyCode(code){
+        var inputDom = $("#input_"+code);
+        inputDom.select(); // 选中文本
+        document.execCommand("copy"); // 执行浏览器复制命令
+        layui.use('layer', function(){
+            var layer = layui.layer;
+
+            layer.msg('已复制商品编码'+code);
+        });
+    }
+
+
+    //获取申报要素信息
+    function getSbysInfo(hscode,hsName){
+        var sbys = '<div class="sbysAreaTitle">' +
+            '<span class="layui-badge layui-bg-blue labelForTable">商品编码 '+hscode+' 申报要素信息</span>' +
+            '<div class="sbys_show_'+hscode+' sbys_show" onclick="showChange(\''+hscode+'\',1)">' +
+            '<svg t="1668568754869" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4404" width="16" height="16"><path d="M771.072 996.352H258.048c-126.976 0-230.4-103.424-230.4-230.4v-512c0-126.976 103.424-230.4 230.4-230.4h513.024c126.976 0 230.4 103.424 230.4 230.4v513.024c0 125.952-103.424 229.376-230.4 229.376z m-513.024-880.64c-75.776 0-138.24 62.464-138.24 138.24v513.024c0 75.776 62.464 138.24 138.24 138.24h513.024c75.776 0 138.24-62.464 138.24-138.24V253.952c0-75.776-62.464-138.24-138.24-138.24H258.048z" fill="#1296db" p-id="4405" data-spm-anchor-id="a313x.7781069.0.i12" class="" style="user-select: auto;"></path><path d="M468.992 739.328V307.2c0-25.6 20.48-46.08 46.08-46.08s46.08 20.48 46.08 46.08v432.128c0 25.6-20.48 46.08-46.08 46.08s-46.08-20.48-46.08-46.08z" fill="#13227a" p-id="4406" data-spm-anchor-id="a313x.7781069.0.i13" class="" style="user-select: auto;"></path><path d="M730.112 232.448h-430.08c-25.6 0-46.08 20.48-46.08 46.08s20.48 46.08 46.08 46.08h164.864V307.2c0-27.648 22.528-50.176 50.176-50.176s50.176 22.528 50.176 50.176v17.408h164.864c25.6 0 46.08-20.48 46.08-46.08s-20.48-46.08-46.08-46.08z" fill="#f66e05" p-id="4407" style="user-select: auto;" data-spm-anchor-id="a313x.7781069.0.i17" class=""></path><path d="M350.208 232.448h-61.44c-19.456 0-34.816 15.36-34.816 34.816v83.968c0 33.792 43.008 47.104 62.464 20.48l61.44-83.968c16.384-22.528 0-55.296-27.648-55.296z" fill="#f66e05" p-id="4408" style="user-select: auto;" data-spm-anchor-id="a313x.7781069.0.i18" class=""></path><path d="M492.544 732.16v32.768c0 12.288 10.24 22.528 22.528 22.528H573.44c23.552 0 31.744-30.72 11.264-43.008l-58.368-32.768c-15.36-8.192-33.792 3.072-33.792 20.48z" fill="#1296db" p-id="4409" data-spm-anchor-id="a313x.7781069.0.i15" class="" style="user-select: auto;"></path><path d="M537.6 732.16v32.768c0 12.288-10.24 22.528-22.528 22.528h-58.368c-23.552 0-31.744-30.72-11.264-43.008l58.368-32.768c14.336-8.192 33.792 3.072 33.792 20.48z" fill="#1296db" p-id="4410" data-spm-anchor-id="a313x.7781069.0.i14" class="" style="user-select: auto;"></path><path d="M679.936 232.448h61.44c19.456 0 34.816 15.36 34.816 34.816v83.968c0 33.792-43.008 47.104-62.464 20.48l-61.44-83.968c-17.408-22.528-1.024-55.296 27.648-55.296z" fill="#f66e05" p-id="4411" style="user-select: auto;" data-spm-anchor-id="a313x.7781069.0.i16" class=""></path></svg>'+
+            '<div style="margin-left:5px;">简洁模式</div>' +
+            '</div>'+
+            '<div class="sbys_show_'+hscode+' sbys_show" onclick="showChange(\''+hscode+'\',2)">' +
+            '<svg t="1668568931355" class="icon" viewBox="0 0 1142 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4454" id="mx_n_1668568931355" width="16" height="16"><path d="M1102.769231 39.384615v945.23077H39.384615V39.384615h1063.384616m0-39.384615H39.384615a39.384615 39.384615 0 0 0-39.384615 39.384615v945.23077a39.384615 39.384615 0 0 0 39.384615 39.384615h1063.384616a39.384615 39.384615 0 0 0 39.384615-39.384615V39.384615a39.384615 39.384615 0 0 0-39.384615-39.384615z" fill="#1296db" p-id="4455" data-spm-anchor-id="a313x.7781069.0.i10" class="" style="user-select: auto;"></path><path d="M39.384615 393.846154h1063.384616v39.384615H39.384615zM39.384615 590.769231h1063.384616v39.384615H39.384615zM39.384615 787.692308h1063.384616v39.384615H39.384615zM39.384615 196.923077h1063.384616v39.384615H39.384615z" fill="#f66e05" p-id="4456" data-spm-anchor-id="a313x.7781069.0.i13" class="" style="user-select: auto;"></path><path d="M315.076923 196.923077v787.692308H275.692308V196.923077zM590.769231 196.923077v787.692308h-39.384616V196.923077zM866.461538 196.923077v787.692308h-39.384615V196.923077z" fill="#f66e05" p-id="4457" data-spm-anchor-id="a313x.7781069.0.i12" class="" style="user-select: auto;"></path><path d="M39.384615 39.384615h1063.384616v157.538462H39.384615z" fill="#13227a" p-id="4458" data-spm-anchor-id="a313x.7781069.0.i11" class="" style="user-select: auto;"></path></svg>'+
+            '<div style="margin-left:5px;">详情模式</div>' +
+            '</div>'+
+            '<span style="margin-left:10px;">要素填写有疑惑？</span>' +
+            '<span class="showSbysCase" onclick="showSbysCase(\''+hscode+'\')">查看申报实例</span>' +
+            '</div>';
+        sbys += '<table class="sbys_table_'+hscode+'" style="width:100%;margin-bottom:8px;">';
+        sbys += '<tr>';
+        sbys += '<th style="width:20%;text-align:center;" class="detailTitle">申报要素</th>';
+        // sbys += '<td style="width:10%;text-align:center;" class="detailTitle">排序</th>';
+        sbys += '<th style="width:10%;text-align:center;" class="detailTitle">是否必填</th>';
+        sbys += '<th style="width:10%;text-align:center;" class="detailTitle">要素编码</th>';
+        sbys += '<th style="width:40%;text-align:center;" class="detailTitle">要素内容</th>';
+        // sbys += '<td style="width:10%;text-align:center;" class="detailTitle">要素类型</th>';
+        sbys += '<th style="width:10%;text-align:center;" class="detailTitle">进出口标志</th>';
+        sbys += '</tr>';
+
+        var ciq = '<span class="layui-badge layui-bg-blue labelForTable">检验检疫信息</span>';
+        ciq += '<table class="ciqTabel_'+hscode+'" style="width:100%;">';
+        ciq += '<tr>';
+        ciq += '<th style="width:5%;text-align:center;" class="detailTitle">序号</th>';
+        ciq += '<th style="width:15%;text-align:center;" class="detailTitle">商品检验检疫编码</th>';
+        ciq += '<th style="width:15%;text-align:center;" class="detailTitle">13位海关编码</th>';
+        ciq += '<th style="width:25%;text-align:center;" class="detailTitle">检验检疫中英文名</th>';
+        ciq += '<th style="width:10%;text-align:center;" class="detailTitle">类型</th>';
+        ciq += '<th style="width:20%;text-align:center;" class="detailTitle">HS名称</th>';
+        ciq += '</tr>';
+
+        var sbysBody = '';
+        var html = '';
+        var page = '';
+        var ciqResult = '';
+
+        var url = 'https://api.guanwuxiaoer.com/api/hscode/getSbysData';
+        var type = 'post';
+        var param = {hscode:hscode,x:gtoKey};
+        var res = requestApi(url,type,param);
+
+        if(res.code == 500){
+            noPower(res);return;
+        }
+        if(res.code == 200 ){
+            var i = 1;
+            var sbysLine = '报关单模式：';
+            var sbysLineNum = '数字模式：';
+            if(res.sbys_data == '[]' || res.sbys_data == null || res.sbys_data == ''){
+                sbysBody += '<tr>';
+                sbysBody += '<td colspan="5" style="text-align: center">无</td>';
+                sbysBody += '</tr>';
+            }else{
+                $.each(res.sbys_data,function(resK,resV){
+                    sbysBody += '<tr>';
+                    sbysBody += '<td>'+ i + '.'+ resV.element+'</td>';
+                    sbysLine += resV.element+' | ';
+                    sbysLineNum += i + '.'+ resV.element+';';
+                    // sbysBody += '<td>'+resV.sort+'</td>';
+                    if(resV.is_required == 0 ){
+                        sbysBody += '<td>选填</td>';
+                    }else if(resV.is_required == 1 ){
+                        sbysBody += '<td><span style="color:red;font-size:15px;vertical-align: sub;">*</span>必填</td>';
+                    }
+                    sbysBody += '<td>'+resV.fac_code+'</td>';
+                    if(resV.element == '原厂商中文名称' ||
+                        resV.element == '原厂商英文名称' ||
+                        resV.element == '反倾销税率' ||
+                        resV.element == '反补贴税率'
+                    ){
+                        sbysBody += '<td class="conventationTaxes" onclick="showContent(\'fqx\',\''+hscode+'\')">'+resV.fac_content+'</td>';
+                    }else{
+                        sbysBody += '<td>'+resV.fac_content+'</td>';
+                    }
+
+                    // sbysBody += '<td>'+resV.fac_type+'</td>';
+                    // sbysBody += '<td>进口</td>';
+                    if(resV.ie_flag == 'E' || resV.element == '出口享惠情况'){
+                        sbysBody += '<td>出口</td>';
+                    }else if(resV.element == '原厂商中文名称' ||
+                        resV.element == '原厂商英文名称' ||
+                        resV.element == '反倾销税率' ||
+                        resV.element == '反补贴税率' ||
+                        resV.element == '是否符合价格承诺'
+                    ){
+                        sbysBody += '<td>进口</td>';
+                    }else{
+                        sbysBody += '<td>进出口</td>';
+                    }
+                    sbysBody += '</tr>';
+                    i++;
+                });
+                sbysLine = sbysLine.substring(0,sbysLine.lastIndexOf('|'));
+                sbysLineNum = sbysLineNum.substring(0,sbysLineNum.lastIndexOf(';'));
+            }
+
+
+            if(res.ciq_data == null || res.ciq_data == '' || res.ciq_data == 'null' || res.ciq_data == undefined){
+                html += '<tr><td colspan="6" style="text-align:center">无</td></tr>';
+            }else{
+                $.each(res.ciq_data,function(k,v){
+                    if(v.classify_cnnm == 'null'
+                        || v.classify_cnnm == null
+                        || v.classify_cnnm == ''
+                    ){
+                        var classifyCnnmStr = '无';
+                    }else{
+                        var classifyCnnmStr = v.classify_cnnm;
+                    }
+                    if(v.en != ''){
+                        html += '<tr>';
+                        html += '<td>'+v.index_num+'</td>';
+                        html += '<td>'+v.ciq_code+'</td>';
+                        html += '<td>'+v.new_hs_code+'</td>';
+                        html += '<td>'+v.ciq_name+'<br>'+v.en+'</td>';
+                        html += '<td>'+classifyCnnmStr+'</td>';
+                        html += '<td>'+hsName+'</td>';
+                        html += '</tr>';
+                    }else{
+                        html += '<tr>';
+                        html += '<td>'+v.index_num+'</td>';
+                        html += '<td>'+v.ciq_code+'</td>';
+                        html += '<td>'+v.new_hs_code+'</td>';
+                        html += '<td>'+v.ciq_name+'</td>';
+                        html += '<td>'+classifyCnnmStr+'</td>';
+                        html += '<td>'+hsName+'</td>';
+                        html += '</tr>';
+                    }
+                });
+            }
+
+
+
+            if(res.page_all_num > 1){
+                page += '<div class="pageCiq_'+hscode+' layui-box layui-laypage layui-laypage-default">';
+                page += '<span >共'+res.count+'条</span>';
+                var allPageNum = res.page_all_num;
+                var pageNumStr = '';
+                for(i=1;i<=allPageNum;i++){
+                    if(i == res.page ){
+                        pageNumStr += '<span class="pageCiqBtn activeBtn">'+i+'</span>';
+                    }else{
+                        pageNumStr += '<span class="pageCiqBtn" data-hscode="'+hscode+'" onclick="dopage('+i+',\''+hscode+'\')">'+i+'</span>';
+                    }
+                }
+                page = page + pageNumStr;
+            }
+            var end = '</table>';
+            ciqResult += ciq + html + end + page;
+        }
+        sbysBody += '</table>';
+        sbysBody += '<div class="sbys_line_'+hscode+' sbys_line">'+sbysLine+'</div>';
+        sbysBody += '<div class="sbys_line_num_'+hscode+' sbys_line">'+sbysLineNum+'</div>';
+
+        var resultArr = new Array();
+        resultArr['sbys'] = sbys + sbysBody;
+        resultArr['ciq'] = ciqResult;
+        return resultArr;
+    }
+
+
+    function hoverforTitle(hscode,type){
+        if(type == 1){
+            var idKey = "#normalMessage_"+hscode;
+            $(idKey).css('background-color',"#bfd8fd");
+        }else if(type == 2){
+            var idKey = "#importTaxes_"+hscode;
+            $(idKey).css('background-color',"#bfd8fd");
+        }else if(type == 3){
+            var idKey = "#exportTaxes_"+hscode;
+            $(idKey).css('background-color',"#bfd8fd");
+        }
+    }
+
+    function outhoverforTitle(hscode,type){
+        if(type == 1){
+            var idKey = "#normalMessage_"+hscode;
+            $(idKey).css('background-color',"#f5f9ff");
+        }else if(type == 2){
+            var idKey = "#importTaxes_"+hscode;
+            $(idKey).css('background-color',"#f5f9ff");
+        }else if(type == 3){
+            var idKey = "#exportTaxes_"+hscode;
+            $(idKey).css('background-color',"#f5f9ff");
+        }
+    }
+
+
+    //获取检验检疫信息
+    // function getCiqInfo(hscode){
+    //     var ciq = '<span class="layui-badge layui-bg-blue labelForTable">检验检疫信息</span>';
+    //     ciq += '<table class="ciqTabel_'+hscode+'" style="width:100%;">';
+    //     ciq += '<tr>';
+    //     ciq += '<td style="width:5%;text-align:center;" class="detailTitle">序号</th>';
+    //     ciq += '<td style="width:15%;text-align:center;" class="detailTitle">商品检验检疫编码</th>';
+    //     ciq += '<td style="width:15%;text-align:center;" class="detailTitle">13位海关编码</th>';
+    //     ciq += '<th style="width:25%;text-align:center;" class="detailTitle">检验检疫中英文名</th>';
+    //     ciq += '<th style="width:10%;text-align:center;" class="detailTitle">类型</th>';
+    //     ciq += '<th style="width:20%;text-align:center;" class="detailTitle">HS名称</th>';
+    //     ciq += '</tr>';
+    //     var html ='';
+    //     var page ='';
+    //
+    //     var url = 'https://api.guanwuxiaoer.com/api/hscode/getCiqData';
+    //     var type = 'post';
+    //     var param = {hscode:hscode,x:gtoKey};
+    //     var res = requestApi(url,type,param);
+    //     if(res.code == 500){
+    //         noPower(res);return;
+    //     }
+    //
+    //     if(res.code == 200 ){
+    //         $.each(res.data,function(k,v){
+    //             html += '<tr>';
+    //             html += '<td>'+v.index_num+'</td>';
+    //             html += '<td>'+v.ciq_code+'</td>';
+    //             html += '<td>'+v.new_hs_code+'</td>';
+    //             html += '<td>'+v.ciq_name+'</td>';
+    //             html += '<td>'+v.classify_cnnm+'</td>';
+    //             html += '</tr>';
+    //         });
+    //     }
+    //
+    //     if(res.page_all_num > 1){
+    //         page += '<div class="pageCiq_'+hscode+' layui-box layui-laypage layui-laypage-default">';
+    //         page += '<span >共'+res.count+'条</span>';
+    //         var allPageNum = res.page_all_num;
+    //         var pageNumStr = '';
+    //         for(i=1;i<=allPageNum;i++){
+    //             if(i == res.page ){
+    //                 pageNumStr += '<span class="pageCiqBtn activeBtn">'+i+'</span>';
+    //             }else{
+    //                 pageNumStr += '<span class="pageCiqBtn" data-hscode="'+hscode+'" onclick="dopage('+i+',\''+hscode+'\')">'+i+'</span>';
+    //             }
+    //         }
+    //         page = page + pageNumStr;
+    //     }
+    //     var end = '</table>';
+    //     var result = ciq + html + end + page;
+    //     return result;
+    // }
+
+
+    function dopage(pageNum,hscode){
+        var ciq = '<tr>';
+        ciq += '<td style="width:5%;text-align:center;" class="detailTitle">序号</th>';
+        ciq += '<td style="width:15%;text-align:center;" class="detailTitle">商品检验检疫编码</th>';
+        ciq += '<td style="width:15%;text-align:center;" class="detailTitle">13位海关编码</th>';
+        ciq += '<th style="width:25%;text-align:center;" class="detailTitle">检验检疫中英文名</th>';
+        ciq += '<th style="width:10%;text-align:center;" class="detailTitle">类型</th>';
+        ciq += '<th style="width:20%;text-align:center;" class="detailTitle">HS名称</th>';
+        ciq += '</tr>';
+        var html ='';
+        var page ='';
+
+        var url = 'https://api.guanwuxiaoer.com/api/hscode/getCiqData';
+        var type = 'post';
+        var param = {page:pageNum,hscode:hscode,x:gtoKey};
+
+        var res = requestApi(url,type,param);
+        if(res.code == 500){
+            noPower(res);return;
+        }
+        if(res.code == 200 ){
+            $.each(res.data,function(k,v){
+
+                if(v.classify_cnnm == 'null'
+                    || v.classify_cnnm == null
+                    || v.classify_cnnm == ''
+                ){
+                    var classifyCnnmStr = '无';
+                }else{
+                    var classifyCnnmStr = v.classify_cnnm;
+                }
+
+                var hsName = '';
+                var ciqStr = v.ciq_name;
+                var expStr = ciqStr.split('(')[1];
+                var hsName = expStr.split(')')[0];
+                if(v.en != ''){
+                    html += '<tr>';
+                    html += '<td>'+v.index_num+'</td>';
+                    html += '<td>'+v.ciq_code+'</td>';
+                    html += '<td>'+v.new_hs_code+'</td>';
+                    html += '<td>'+v.ciq_name+'<br>'+v.en+'</td>';
+                    html += '<td>'+hsName+'</td>';
+                    html += '<td>'+classifyCnnmStr+'</td>';
+                    html += '</tr>';
+                }else{
+                    html += '<tr>';
+                    html += '<td>'+v.index_num+'</td>';
+                    html += '<td>'+v.ciq_code+'</td>';
+                    html += '<td>'+v.new_hs_code+'</td>';
+                    html += '<td>'+v.ciq_name+'</td>';
+                    html += '<td>'+hsName+'</td>';
+                    html += '<td>'+classifyCnnmStr+'</td>';
+                    html += '</tr>';
+                }
+            });
+        }
+        $('.ciqTabel_'+hscode).empty();
+        var tableHtml = ciq + html;
+        $('.ciqTabel_'+hscode).append(tableHtml);
+
+        if(res.page_all_num > 1){
+            page += '<div class="pageCiq_'+hscode+' layui-box layui-laypage layui-laypage-default">';
+            page += '<span >共'+res.count+'条</span>';
+            var allPageNum = res.page_all_num;
+            var pageNumStr = '';
+            for(i=1;i<=allPageNum;i++){
+                if(i == res.page ){
+                    pageNumStr += '<span class="pageCiqBtn activeBtn">'+i+'</span>';
+                }else{
+                    pageNumStr += '<span class="pageCiqBtn" data-hscode="'+hscode+'" onclick="dopage('+i+',\''+hscode+'\')">'+i+'</span>';
+                }
+            }
+            page = page + pageNumStr;
+            $('.pageCiq_'+hscode).empty();
+            $('.pageCiq_'+hscode).append(page);
+        }
+    }
+
+    function getDetailTips(obj,type,t){
+        var fcsc = {"1":"进口许可证", "2":"两用物项和技术进口许可证", "3":"两用物项和技术出口许可证", "4":"出口许可证", "5":"纺织品临时出口许可证", "6":"旧机电产品禁止进口", "7":"自动进口许可证", "8":"禁止出口商品", "9":"禁止进口商品", "A":"入境检验检疫", "B":"出境检验检疫（电子底账）", "D":"毛坯钻石进出境检验", "E":"濒危物种允许出口证明书", "F":"濒危物种允许进口证明书", "G":"两用物项和技术出口许可证(定向)", "H":"港澳OPA纺织品证明", "I":"麻醉药品精神药物进(出)口准许证", "J":"黄金及黄金制品进出口准许证", "L":"药品进出口准许证", "M":"密码产品和设备进口许可证", "O":"自动进口许可证(新旧机电产品)", "P":"固体废物进口许可证", "Q":"进口药品通关单", "R":"进口兽药通关单", "S":"农药进出口登记管理放行通知单", "T":"银行调运外币现钞进出境证明文件", "U":"合法捕捞产品通关证明", "V":"人类遗传资源材料出口、出境证明", "X":"有毒化学品进出口环境管理放行通知单", "Y":"原产地证明", "Z":"赴境外加工光盘进口备案证明", "b":"进口广播电影电视节目带(片)提取单", "c":"内销征税联系单", "d":"援外项目任务通知函", "e":"关税配额外优惠税率进口棉花配额证", "f":"音像制品（成品）进口批准单", "g":"技术出口合同登记证", "h":"核增核扣表", "i":"技术出口许可证", "k":"民用爆炸物品进出口审批单", "m":"银行调运人民币现钞进出境证明", "n":"音像制品（版权引进）批准单", "q":"国别关税配额证明", "r":"预归类标志", "s":"适用ITA税率的商品用途认定证明", "t":"关税配额证明", "u":"钟乳石出口批件", "v":"自动进口许可证(加工贸易)", "x":"出口许可证(加工贸易)", "y":"出口许可证(边境小额贸易)", "z":"古生物化石出境批件"};
+        var fiaqr = {"L":"民用商品入境验证（3C）", "M":"进口商品检验", "N":"出口商品检验", "P":"进境动植物、动植物产品检疫", "Q":"出境动植物、动植物产品检疫", "R":"进口食品卫生监督检验", "S":"出口食品卫生监督检验", "V":"进境卫生检疫", "W":"出境卫生检疫"};
+
+        var obj = obj.replace(/\//g, "");
+        var obj = obj.replace(/\./g, "");
+        var objStr = '';
+        for(i=0;i<obj.length;i++){
+            objStr += obj[i]+',';
+        }
+        var obj =objStr;
+        var arr = obj.split(',');
+        var content = '';
+        $.each(arr,function(k,v){
+            if(v != ''){
+                if(type == 'ciq'){
+                    $.each(fiaqr,function(key,val){
+                        if(v == key ){
+                            content += key+':'+val+"<br/>";
+                        }
+                    });
+                }else if(type == 'jyjy'){
+                    $.each(fcsc,function(key,val){
+                        if(v == key ){
+                            content += key+':'+val+"<br/>";
+                        }
+                    });
+                }
+            }
+        });
+        var className = t.attr('class');
+        if(content != ''){
+            showTips('.'+className,content);
+        }
+    }
+
+    function showTips(obj,content){
+        layui.use('layer',function(){
+            var layer = layui.layer;
+            layer.tips(content, obj, {
+                tips: [1, '#023885'] //还可配置颜色
+            });
+        });
+    }
+
+
+    function page(data,type){
+        layui.use('laypage', function() {
+            var laypage = layui.laypage;
+            laypage.render({
+                elem: 'page', //注意，这里的 page 是 ID，不用加 # 号
+                count: data.count, //数据总数，从服务端得到
+                limit: data.limit, // 每页条数
+                // limits: [10],
+                layout: ['count', 'prev', 'page', 'next', 'skip'],
+                jump: function(obj, first) {
+                    //console.log(obj)
+                    //obj包含了当前分页的所有参数，比如：
+                    //console.log(obj.curr); //得到当前页，以便向服务端请求对应页的数据。
+                    //console.log(obj.limit); //得到每页显示的条数
+
+                    //首次不执行
+                    if (!first) {
+                        //do something
+                        if(type == 1 ){
+                            numpage(obj.curr, obj.limit); // 分页点击传参
+                        }else{
+                            numpageMoreSearch(obj.curr, obj.limit); // 分页点击传参
+                        }
+                    }
+                }
+            });
+        });
+        changecontrast_type();
+    }
+
+    function numpage(pageNum, numPerPage, normal) {
+        var loadIndex = layer.load(2, {time: 10*1000});
+        var normal = normal || null;
+        $('#pageHidden').val(pageNum);
+        var key = $('#btn').val();
+        var expiresIndex = $('#expiresIndex').prop('checked');
+        var param = {page:pageNum,limit:numPerPage,key:key,x:gtoKey,is_expires:expiresIndex};
+        var data = getDataApi(param);
+        layer.close(loadIndex);
+        if(data.code == 500){
+            noPower(data);return;
+        }
+
+        if(pageNum>10 && data.data == 'more accurate'){
+            layer.open({
+                type: 1,
+                title: '<span style="color:black">友情提示</span>',
+                content: '<div style="text-align: center;">'
+                    +'<p style="font-size:20px">为您找到 <span style="color: #222;">'+ data.count +' </span>条相关结果，请输入更精准的关键词查询</p>'
+                    +'<p style="font-size:16px">如需帮助请联系微信号 <b style="color: #222;">guanwuxiaoer</b></p>'
+                    +'<img src="/static/taxes/img/index/code1.jpg" alt="" width="200">'
+                    +'<br/>'
+                    +'<br/>'
+                    +'</div>',
+                // offset: auto},
+                // offset: ['100px', tableLeft+'px'],
+                area:"600px",
+                id:''
+            });
+            data.data=[]
+            datalist(JSON.stringify(data));
+            return;
+        }
+        datalist(data);
+        changecontrast_type();
+    }
+
+    function numpageMoreSearch(pageNum, numPerPage,  normal) {
+        var normal = normal || null;
+        $('#pageHidden').val(pageNum);
+        var key = $('#btnMoreSearch').val();
+        var url ='https://api.guanwuxiaoer.com/api/hscode/hsCodeMoreSearch';
+        var type = 'post';
+        var param = {page:pageNum,limit:numPerPage,hscodearr:key,x:gtoKey};
+        var res = requestApi(url,type,param);
+        if(res.code == 500){
+            noPower(res);return;
+        }
+        datalist(res);
+        changecontrast_type();
+    }
+
+    var timerarr = {};
+    $('#searchBtn').bind('input propertychange', function() {
+        var hsCode = $('#searchBtn').val();
+        if(hsCode == '' || hsCode == null ){
+
+        }else{
+
+            var url = 'https://api.guanwuxiaoer.com/api/hscode/searchHsCode';
+            var type = 'post';
+            var param = {hscode:hsCode,x:gtoKey};
+            var res = requestApi(url,type,param);
+
+            $('.hscodelist').hide();
+            $('.hscodelist').empty();
+            if(res.code == 500){
+                noPower(res);return;
+            }
+            var html = '';
+            if(res.data != ''){
+                $.each(res.data,function(k,v){
+                    html += '<div class="hscode" onclick="chooseHsCode($(this))" data-value="'+v.hs_code+'" >'+v.hs_code+'</div>';
+                });
+                $('.hscodelist').append(html);
+                $('.hscodelist').show();
+            }
+        }
+    });
+
+    function searchHsCodeBtn(){
+        var hsCode = $('#searchBtn').val();
+        if(hsCode == '' || hsCode == null ){
+            $('.hscodelist').hide();
+        }else{
+            var url = 'https://api.guanwuxiaoer.com/api/hscode/searchHsCode';
+            var type = 'post';
+            var param = {hscode:hsCode,x:gtoKey};
+            var res = requestApi(url,type,param);
+
+            if(res.code == 500){
+                noPower(res);return;
+            }
+            $('.hscodelist').hide();
+            $('.hscodelist').empty();
+
+
+            var html = '';
+            if(res.data != ''){
+                $.each(res.data,function(k,v){
+                    html += '<div class="hscode" onclick="chooseHsCode($(this))" data-value="'+v.hs_code+'" >'+v.hs_code+'</div>';
+                });
+                $('.hscodelist').append(html);
+                $('.hscodelist').show();
+            }
+        }
+    }
+
+    function changecontrast_type(){
+        var hscodearr = $('#hscodearr').val();
+        console.log(hscodearr);
+        if(hscodearr != undefined){
+            var arr = hscodearr.split('|');
+            $.each(arr,function(k,v){
+                if(v == '' || v == null){
+
+                }else{
+                    $('.contrast_'+v).empty();
+                    $('.contrast_'+v).text('取消');
+                    $('.contrast_'+v).addClass('qx');
+                }
+            });
+        }
+    }
+
+    function chooseHsCode(obj){
+        var hsCode = obj.data('value');
+        var hscodeDivObj = $('.hscode_div');
+        var index = hscodeDivObj.length;
+        if(index >= 5){
+            layer.msg('最多只能选择5个编码');return;
+        }else if(index < 5){
+            var allHsCode = $('#hscodearr').val();
+            var allHsCodeArr = allHsCode.split('|');
+            var pass = true;
+            $.each(allHsCodeArr,function(k,v){
+                if(v == hsCode){
+                    layer.msg('该编码已存在对比列表中');
+                    pass = false;
+                }
+            });
+            if(pass == false ){
+                return;
+            }
+            var html = '<div class="hscode_div"><span>'+hsCode+'</span><span data-value="'+hsCode+'" onclick="delHsCode($(this))" class="XXX"></span></div>';
+            $('.chooseHscodeList').append(html);
+            allHsCode += hsCode + '|';
+            $('#hscodearr').val(allHsCode);
+        }
+        $('.contrast_'+hsCode).empty();
+        $('.contrast_'+hsCode).text('取消');
+        $('.contrast_'+hsCode).addClass('qx');
+        $('.hscodelist').hide();
+        $('.hscodelist').empty();
+        // console.log($('#hscodearr').val());
+    }
+
+
+    function delHsCode(obj){
+        var hsCode = obj.data('value');
+        obj.parent().remove();
+        var hscodestr = $('#hscodearr').val();
+        var hsarr = hscodestr.split('|');
+        var f = '';
+        var num = hsarr.length;
+        $.each(hsarr,function(k,v){
+            if(v == hsCode){
+
+            }else{
+                var s = num -1;
+                if(k == s){
+                    f += v;
+                }else{
+                    f += v+'|';
+                }
+            }
+        });
+        $('#hscodearr').val(f);
+        $('.contrast_'+hsCode).empty();
+        $('.contrast_'+hsCode).text('对比');
+        $('.contrast_'+hsCode).removeClass('qx');
+    }
+
+
+    function clearlist(){
+        $('.chooseHscodeList').empty();
+        $('#hscodearr').val('');
+
+        $(".qx").empty();
+        $(".qx").text('对比');
+        $(".qx").removeClass('qx');
+    }
+
+    function toContrast(){
+        var arr = $('#hscodearr').val();
+        var url = 'https://www.guanwuxiaoer.com/hscode.php?action=contrast&hscodestr='+arr;
+        window.open(url,"_blank");
+    }
+
+    $("body").keydown(function () {
+        if (window.event.keyCode==13) {
+            getHsCodeSearch();
+        }
+    });
+
+    function turnoff(){
+        clearlist();
+        $('.rightMenu').hide();
+    }
+
+    layui.use(['form','element','layer'],function(){
+        var form = layui.form;
+        var element = layui.element;
+        var layer = layui.layer;
+        form.render();
+        element.init();
+    });
+
+    //订阅功能
+    function subscribeCode(hscode){
+        var uid = "105359";
+        if(uid == '' || uid == 0){
+            var res = new Array();
+            res['code'] = 500;
+            res['msg'] = 'login';
+            noPower(res);return;
+        }
+        $('.rightMenuAllRange').show();
+        $('.rightMenu').hide();
+        $('.subscribeList').show();
+        $('.subscribeRange').empty();
+
+        $('.headerRightMenu2').find('img').attr('src','/static/image/subscrible.png');
+        $('.headerRightMenu2').css('background','white');
+        $('.headerRightMenu').find('img').attr('src','/static/image/contrast2.png');
+        $('.headerRightMenu').css('background','#1E9FFF');
+
+        var url = 'https://api.guanwuxiaoer.com/api/hscode/subscribeCode';
+        var type = 'post';
+        var param = {hscode:hscode,x:gtoKey};
+        var res = requestApi(url,type,param);
+        if(typeof(res) == 'string'){
+            var res = JSON.parse(res);
+        }
+        if(res.code == 500){
+            noPower(res);return;
+        }
+
+        if(res.code == 200 ){
+            layer.open({
+                type: 1,
+                title: '<span style="color:black">订阅提示</span>',
+                content: '<div style="text-align:center"><p style="color: #FF9800;font-size: 21px;"><svg t="1605604510094" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2825" width="23" height="23" style="position:relative;margin-right:5px;top:3px;"><path d="M506.01 16.497c-277.294 0-502.083 224.778-502.083 502.077 0 277.274 224.789 502.072 502.072 502.072s502.073-224.798 502.073-502.072c0-277.3-224.789-502.077-502.068-502.077z m269.122 369.54L462.725 698.44a33.46 33.46 0 0 1-47.33 0l-156.2-156.201a33.464 33.464 0 0 1 0-47.33 33.47 33.47 0 0 1 47.334 0l132.537 132.532 288.732-288.738a33.47 33.47 0 1 1 47.334 47.335z m0 0" fill="#FF9800" p-id="2826"></path></svg>订阅成功</p><p style="font-size:14px;color:#009688;line-height: 1.75;margin: 13px 0px 0px 0px;text-align: left">订阅后如需商品编码变更通知服务，请点击下方 “设置通知方式” （支持微信/邮箱/短信）</p><a target="_blank" href="https://www.guanwuxiaoer.com/hscode.php?action=subscribe" style="text-decoration: underline;color:#3388ff;display:inline-block;margin: 10px 21px 10px 0;">查看订阅记录</a><a target="_blank" href="https://www.guanwuxiaoer.com/hscode.php?action=subscribe" style="text-decoration: underline;color:#3388ff;display:inline-block;margin:10px 0 10px 0;">设置通知方式</a></div>', //这里content是一个普通的String
+                // offset: auto},
+                // offset: ['100px', tableLeft+'px'],
+                area:"300px",
+                id:'successTips'
+            });
+        }else{
+            layer.msg(res.msg);
+        }
+        $.each(res.data,function(k,v){
+            if(k < 10){
+                $('#subscriblePage').hide();
+                var html = "<div class='hscode_div subscribe_"+v.hs_code+"'><span>"+v.hs_code+"</span><span onclick='delSubscribeCode(\""+v.hs_code+"\")' class='XXX'></span></div>";
+                $('.subscribeRange').append(html);
+            }else{
+                $('#subscriblePage').show();
+            }
+        });
+    }
+
+
+    function showSubscribeQrCode(hscode){
+        clearInterval(bindWechatTimer);
+        $('.sfq').empty();
+        var t = (new Date()).getTime();
+        var uid = "105359";
+        var url = 'https://www.guanwuxiaoer.com/loginass.php?mod=login&request=qrcode&qrcodetype=sub&' + t;
+        var type = 'post';
+        var param = {x:ECharts_webmaster_baidu_hmt_C6D4E_5F3G1_H2I0J_KLMNO_PQRSTU_powerful,uid:uid,hscode:hscode};
+        var res = requestApi(url,type,param);
+        $('.sfq').empty();
+        if (res.code == 200) {
+            var userKey = GetQueryValue("key", res.qrcode);
+            $('#userKey').val(userKey);
+            var html = '<img src = "' + res.qrcode + '" style="width:200px;height:200px;margin-top:20px;border:1px solid #ccc;border-radius:5px;">';
+            $('.sfq').append(html);
+        }
+
+        $('.subscribeForQrcode').show();
+        bindWechatTimer = setInterval(function(){
+            checkBindWechat();
+        }, 2000);
+    }
+
+    function checkBindWechat(){
+        var uid = "105359";
+        var url = 'https://api.guanwuxiaoer.com/api/temp/checkBindWechat';
+        var type = 'post';
+        var param = uid;
+        var res = requestApi(url,type,param);
+
+        if(res.code == 500){
+            clearInterval(bindWechatTimer);
+            noPower(res);return;
+        }
+
+        if(res.code == 200 ){
+            layer.msg(res.msg);
+            clearInterval(bindWechatTimer);
+            $('.subscribeForQrcode').hide();
+            $('.sfq').empty();
+        }
+    }
+
+    function dumpMenu(num){
+        if(num == 1){
+            window.location.href='/hscode.php';
+        }else if(num == 2){
+            window.location.href='/hscode.php?action=contrast';
+        }else if(num == 3){
+            window.location.href='/hscode.php?action=change';
+        }else if(num == 4){
+            window.location.href='/hscode.php?action=subscribe';
+        }
+    }
+
+    function subscribeList(obj){
+        $('.subscribeRange').empty();
+        var displayType = $('.subscribeRange').css("display");
+        if(displayType == 'none'){
+            var res = getSubscribeInfo();
+            var data = JSON.parse(res);
+            if(res.code == 500){
+                noPower(res);return;
+            }
+            var res = JSON.parse(res);
+            if(res.code == 200 ){
+                var html = '';
+                $.each(res.data,function(k,v){
+                    html += "<div class='hscode_div subscribe_"+v.hs_code+"'><span>"+v.hs_code+"</span><span onclick='delSubscribeCode(\""+v.hs_code+"\")' class='XXX'></span></div>";
+                });
+                $('.subscribeRange').append(html);
+            }
+            obj.css('width','110px');
+            $('.subscribeRange').show();
+
+        }else{
+            obj.css('width','20px');
+            $('.subscribeRange').hide();
+        }
+    }
+
+    function  delSubscribeCode(hscode){
+        var url = 'https://api.guanwuxiaoer.com/api/hscode/delSubscribeCode';
+        var type = 'post';
+        var param = {hscode:hscode,x:gtoKey};
+        var res = requestApi(url,type,param);
+
+        if(res.code == 500){
+            noPower(res);return;
+        }
+        if(res.code == 200){
+            $('.subscribe_'+hscode).remove();
+        }
+    }
+
+    function menuDisk(){
+        var t = $('.rightMenuAllRange').css('display');
+        if(t == 'none'){
+            $('.rightMenuAllRange').show();
+        }else{
+            $('.rightMenuAllRange').hide();
+        }
+    }
+
+    //页面右边悬浮菜单按钮里的菜单切换方法
+    function selectMenu(t,obj){
+        if(t == 1){
+            $('.subscribeList').hide();
+            $('.rightMenu').show();
+            $('.headerRightMenu2').find('img').attr('src','/static/image/subscrible2.png');
+            $('.headerRightMenu2').css('background','#1E9FFF');
+            $('.headerRightMenu').find('img').attr('src','/static/image/contrast.png');
+            $('.headerRightMenu').css('background','white');
+            eachHscodeList();
+        }else if(t == 2){
+            $('.rightMenu').hide();
+            $('.subscribeList').show();
+            $('.subscribeRange').empty();
+
+            $('.headerRightMenu2').find('img').attr('src','/static/image/subscrible.png');
+            $('.headerRightMenu2').css('background','white');
+            $('.headerRightMenu').find('img').attr('src','/static/image/contrast2.png');
+            $('.headerRightMenu').css('background','#1E9FFF');
+            var res = getSubscribeInfo();
+            if(res.code == 500){
+                noPower(res);return;
+            }
+            if(res.code == 200 ){
+                var html = '';
+                $.each(res.data,function(k,v){
+                    html += "<div class='hscode_div subscribe_"+v.hs_code+"'><span>"+v.hs_code+"</span><span onclick='delSubscribeCode(\""+v.hs_code+"\")' class='XXX'></span></div>";
+                });
+                $('.subscribeRange').append(html);
+            }
+        }
+    }
+
+
+    function getSubscribeInfo(){
+
+        var data = '';
+        var url = 'https:///api.guanwuxiaoer.com/api/hscode/subscribeList';
+        var type = 'post';
+        var param = {x:gtoKey};
+        var data = requestApi(url,type,param);
+        return data;
+    }
+
+    var morSearchWindowId = '';
+    function showMoreSearch(){
+        layui.use(['layer'], function(){
+            var layer = layui.layer;
+            var tips = '请输入待查询的HS' + "\r\n";
+            tips +='每行一个，每次最多20个，格式如下：' + "\r\n"+ "\r\n";
+            tips +='9031.90.21' + "\r\n"
+            tips +='9031.90.45' + "\r\n"
+            tips +='9031.90.54' + "\r\n"
+            tips +='9031.90.59' + "\r\n"
+            tips +='97050000'   + "\r\n"
+            tips +='96200050'   + "\r\n"
+            tips +='96190079'   + "\r\n"
+            morSearchWindowId = layer.open({
+                type: 1,
+                title: '<span>批量编码查询</span>',
+                content: '<div style="text-align:center" onclick="calc()"><div id="moreSearchInp"><textarea id="moreSearchText" onkeyup="delSearchMoreHsCodeList()" placeholder="请填写商品编码"></textarea></div><span class="calc"></span><div class="moreSearchBtnArea"><button onclick="clearTextArea()" class="layui-btn layui-btn-primary">清空</button><div style="display:flex;position:relative;margin-left:20px"><button onclick="hscodeMoreSearch()" class="layui-btn layui-btn-primary">批量查询</button><img class="sbysKeyVip" src="/static/image/VIP2.png" alt=""></div></div></div>', //这里content是一个普通的String
+                // offset: auto},
+                // offset: ['100px', tableLeft+'px'],
+                area:"430px",
+                id:'moreSearch'
+            });
+        });
+    }
+    console.log(morSearchWindowId);
+
+    var sTimer;
+    var hTimer;
+    function calc(){
+
+        $('#moreSearchText').focus();
+        $('#moreSearchText').on('keyup',function(e){
+            var str = $('#moreSearchText').val();
+
+            if(str == '' || str == undefined || str == null ){
+                // var theEvent = window.event || e;
+                //   var code = theEvent.keyCode || theEvent.which || theEvent.charCode;
+                //   if (code == 8) {
+                //      var s = $('.searchMoreListRange:last');
+                //      console.log(s);
+                //   }
+            }else{
+                var reg = new RegExp("，","g");
+                var reg2 = new RegExp(",","g");
+                var str = str.replace(reg,"\n");
+                // console.log(str);
+                var str = str.replace(reg2,"\n");
+                // console.log(str);
+                var arr = str.split("\n");
+                // console.log(arr);
+                var newarr = new Array();
+                for(var i = 0 ;i<arr.length;i++){
+                    if(arr[i] == '' || arr[i] == null || arr[i] == undefined ){
+
+                    }else{
+                        newarr.push(arr[i]);
+                    }
+                }
+                // console.log(newarr);
+                var arrLen = newarr.length;
+                // console.log('len:'+arrLen);
+                if(arrLen > 1){
+                    for(var i = 0;i<arrLen;i++){
+                        // console.log(newarr[i]);
+                        var strNum = newarr[i].length;
+                        // console.log(strNum);
+                        if(strNum > 7 && strNum < 11 ){
+                            if(isRealNum(newarr[i])){
+                                var hasClass = $('.searchMoreListRange').hasClass('searchMore_'+newarr[i]);
+                                if(!hasClass){
+                                    var html = '<div class="searchMoreListRange searchMore_'+newarr[i]+'" data-value="'+newarr[i]+'"><span class="searchMoreList" data-value="'+newarr[i]+'">'+newarr[i]+'</span><span class="XXX" onclick="delSearchMoreHsCode($(this))"></span></div>';
+                                    $('#moreSearchInp').prepend(html);
+                                }
+                            }
+                        }
+                    }
+                    $('#moreSearchText').val('');
+                }else if(arrLen == 1){
+                    var strNum = newarr[0].length;
+
+                    if(strNum > 7 && strNum < 11 ){
+                        clearTimeout(hTimer);
+                        var hasClass = $('.searchMoreListRange').hasClass('searchMore_'+newarr[0]);
+                        if(!hasClass){
+                            // console.log('hasClass:'+hasClass);
+                            hTimer = setTimeout(function(){
+                                var html = '<div class="searchMoreListRange searchMore_'+newarr[0]+'" data-value="'+newarr[0]+'"><span class="searchMoreList" data-value="'+newarr[0]+'">'+newarr[0]+'</span><span class="XXX" onclick="delSearchMoreHsCode($(this))"></span></div>';
+                                $('#moreSearchInp').prepend(html);
+                                $('#moreSearchText').val('');
+                            },1500);
+                        }else{
+                            $('#moreSearchText').val('');
+                        }
+                    }
+                }
+            }
+        })
+    }
+
+    var ss = document.getElementById('moreSearchText');
+
+    function delSearchMoreHsCodeList(){
+        var str = $('#moreSearchText').val();
+        if(str == '' || str == undefined || str == null ){
+            var theEvent = window.event || e;
+            var code = theEvent.keyCode || theEvent.which || theEvent.charCode;
+            if (code == 8) {
+                var s = $('.searchMoreListRange:last');
+                s.remove();
+            }
+        }
+    }
+
+    function line(num){
+        if(num == 0 ){
+            $('.calc').empty();
+        }else{
+            $('.calc').empty();
+            var text = '共'+num+'行';
+            $('.calc').append(text);
+        }
+    }
+
+    function delSearchMoreHsCode(obj){
+        obj.parent().remove();
+    }
+
+    function clearTextArea(){
+        $('.searchMoreListRange').remove();
+    }
+
+    function hscodeMoreSearch(){
+        var hscodearr = new Array();
+        $('.searchMoreListRange').each(function(){
+            var hscode = $(this).data('value');
+            hscodearr.push(hscode);
+        });
+        getHsCodeMoreSearch(hscodearr);
+        layui.use(['layer'], function(){
+            var layer = layui.layer;
+            layer.close(morSearchWindowId);
+        });
+    }
+
+    function getHsCodeMoreSearch(hscodearr){
+        $('#btnMoreSearch').val(hscodearr);
+        var url = 'https://api.guanwuxiaoer.com/api/hscode/hsCodeMoreSearch';
+        var type = 'post';
+        var param = {hscodearr:hscodearr,x:gtoKey};
+        var res = requestApi(url,type,param);
+        if(res.code == 500){
+            noPower(res);return;
+        }
+        datalist(res);
+        page(res,2);
+    }
+
+    //显示协定税率详情
+    function showXdContent(hscode,code,name){
+        var url = 'https://api.guanwuxiaoer.com/api/hscode/getConventionalTaxesInfo';
+        var type = 'post';
+        var param = {hscode:hscode,code:code,name:name,x:gtoKey}
+        var res = requestApi(url,type,param);
+        if(res.code == 500){
+            noPower(res);return;
+        }
+        if(res.code == 200 ){
+            if(res.data == null || res.data == '' || res.data == '[]'){
+                layer.msg('暂无详情信息');
+            }else{
+                var html = '<table class="layui-table">';
+                if(res['data'][0]['impAgreementRate2'] == undefined){
+                    html += '<tr><th>原产国（地区）</th><th>协定税率（%）</th></tr>';
+                }else{
+                    html += '<tr><th>原产国（地区）</th><th>协定税率-上半年（%）</th><th>协定税率-下半年（%）</th></tr>';
+                }
+
+                $.each(res.data,function(k,v){
+                    if(v.impAgreementRate == null){
+                        var rate = '无'
+                    }else{
+                        var rate = v.impAgreementRate;
+                    }
+                    if(v.impAgreementRate2 == undefined){
+                        if(name == 'RCEP' &&  v.conuntry == '印度尼西亚' ){
+                            html += '<tr><td>'+v.conuntry+'</td><td><span>'+rate+'</span>&nbsp;&nbsp;&nbsp;<span style="color:red;">(2023年1月2日生效)</span></td></tr>';
+                        }else if(name == 'RCEP' &&  v.conuntry == '菲律宾'){
+                            html += '<tr><td>'+v.conuntry+'</td><td><span>'+rate+'</span>&nbsp;&nbsp;&nbsp;<span style="color:red;">(2023年6月2日生效)</span></td></tr>';
+                        }else{
+                            html += '<tr><td>'+v.conuntry+'</td><td>'+rate+'</td></tr>';
+                        }
+                    }else{
+                        if(v.impAgreementRate2 == null && v.impAgreementRate2 != undefined){
+                            var rate2 = '无'
+                        }else{
+                            var rate2 = v.impAgreementRate2;
+                        }
+                        html += '<tr><td>'+v.conuntry+'</td><td>'+rate+'</td><td>'+rate2+'</td></tr>';
+                    }
+                });
+                html += '</table>';
+                layer.open({
+                    type: 1,
+                    title:res.data[0].agreementName,
+                    skin: 'layui-layer-rim', //加上边框
+                    area: 'auto', //宽高
+                    maxHeight:500,//maxHeigth与maxWidth值的写法是直接写数字，不用px
+                    content: html,
+                    id:"convertationWindow",
+                });
+                generateWaterBySbysCase( nowDate+userStr,'关务小二 ','xddetail');
+            }
+        }
+    }
+
+    $(document).keyup(function(e){
+        var key =  e.which || e.keyCode;;
+        if(key == 27){
+            layer.close(layer.index)
+        }
+    });
+
+    function showContent(datatype,hscode){
+        var key = datatype+'_'+hscode;
+        var data = sessionStorage.getItem(key);
+        var data = JSON.parse(data);
+
+        if(datatype == 'fqx' || datatype == 'fbt'){
+            var fbtdata = sessionStorage.getItem('fbt_'+hscode);
+            var fbtdata = JSON.parse(fbtdata);
+            var fqxdata = sessionStorage.getItem('fqx_'+hscode);
+            var fqxdata = JSON.parse(fqxdata);
+            var fqxfbtarr = new Array();
+
+            // console.log(fqxdata);
+            $.each(fqxdata.data,function(k,v){
+                var s = v;
+                s.impAntiddutiesRate = accMul(s.impAntiddutiesRate,100);
+                s.impAntiddutiesRate = s.impAntiddutiesRate+'%';
+                var issetType = false;
+                if(fbtdata == null ){
+                    s.impCountervailingRate = '';
+                }else{
+                    $.each(fbtdata.data,function(bk,bv){
+                        if(bv.companyName == v.companyName && bv.companyNameCn == v.companyNameCn){
+                            s.impCountervailingRate = bv.impCountervailingRate;
+                            s.impCountervailingRate = accMul(s.impCountervailingRate,100);
+                            s.impCountervailingRate = s.impCountervailingRate+'%';
+
+                            issetType = true;
+                        }
+                    });
+                    if(issetType == false ){
+                        s.impCountervailingRate = '';
+                    }
+                }
+                fqxfbtarr.push(s);
+            });
+            var data = new Array();
+            data.data = fqxfbtarr;
+        }
+
+        var html = '<table class="layui-table">';
+        // 进口废弃电器电子基金
+        var titleName = '';
+        if(datatype == 'fqdz'){
+            titleName = '进口废弃电器电子基金';
+            html += '<tr>';
+            html += '<th>原产国（地区）</th>';
+            html += '<th>进口废弃电器电子基金</th>';
+            html += '<th>保障措施关税税率</th>';
+            html += '</tr>';
+        }else if(datatype == 'fqx' || datatype == 'fbt'){
+            titleName = hscode + ' 进口反倾销、反补贴税率';
+            html += '<tr>';
+            // html += '<th style="width:18%;font-weight:bold;">原产国（地区）</th>';
+            html += '<th style="width:32%;font-weight:bold;">原厂商（中文）</th>';
+            html += '<th style="width:35%;font-weight:bold;">原厂商（英文）</th>';
+            html += '<th style="width:15%;font-weight:bold;">反倾销税率</th>';
+            html += '<th style="width:15%;font-weight:bold;">反补贴税率</th>';
+            html += '</tr>';
+        }else if(datatype == 'xd'){
+            titleName = '协定税率';
+            html += '<tr>';
+            html += '<th>原产国（地区）</th>';
+            html += '<th>原厂商（中文）</th>';
+            html += '<th>原厂商（英文）</th>';
+            html += '<th>协定税率</th>';
+            html += '</tr>';
+        }
+        // console.log(data);
+        // console.log(fbtdata);
+        $.each(data.data,function(k,v){
+            if(datatype == 'fqdz'){
+                html += '<tr>';
+                html += "<td>"+v.countryName+"</td>";
+                html += "<td>"+v.impFundRate+"</td>";
+                html += "<td>"+v.impSafeguardRate+"</td>";
+                html += '</tr>';
+            }else if(datatype == 'fqx' || datatype == 'fbt'){
+                html += '<tr>';
+                // html += "<td>"+v.countryName+"</td>";
+                html += "<td>"+v.companyNameCn+"</td>";
+                html += "<td>"+v.companyNameEn+"</td>";
+                html += "<td>"+v.impAntiddutiesRate+"</td>";
+                html += "<td>"+v.impCountervailingRate+"</td>";
+                html += '</tr>';
+            }
+        });
+        html += '</table>';
+        layer.open({
+            type: 1,
+            title:titleName,
+            skin: 'layui-layer-rim', //加上边框
+            area: 'auto', //宽高
+            maxHeight:500,
+            maxWidth:850,
+            content: html,
+            id:"ImportTaxesWindow"
+        });
+        if(datatype == 'fqx' || datatype == 'fbt'){
+            generateWaterBySbysCase( nowDate+userStr,'关务小二 ','tax');
+        }
+    }
+
+    function getRequestInfo(param,type){
+        if(type == 1){
+            //精准查询
+            var url = 'https://api.guanwuxiaoer.com/api/hscode/getSbysCaseApi';
+        }else{
+            //模糊查询
+            var url = 'https://api.guanwuxiaoer.com/api/hscode/getMoreSbysCaseApi';
+        }
+        var type ='post';
+        var result = requestApi(url,type,param)
+        return result;
+    }
+
+
+    function showSbysCase(hscode,skey){
+        // 是否登录判断
+        // if(!uid || uid=="0"){
+        //     // 调出登录框
+        //     let res = {};
+        //     noPower();
+        //     return false
+        // }
+        layer.closeAll();
+        var sbysCaseHtml = '<div class="sbysCaseContent">';
+        var skeyStr = '';
+        if(skey == undefined){
+            skeyStr = '';
+        }else{
+            skeyStr =  sessionStorage.getItem('lssl_'+skey);
+            skeyStr.replace(/"/g,'\\"');
+            skeyStr.replace(/'/g,"\\'");
+        }
+        console.log(skeyStr);
+        var param = {hscode:hscode,skey:skeyStr,x:gtoKey};
+        var res = getRequestInfo(param,1);
+        if(typeof(res) == 'string'){
+            var res = JSON.parse(res);
+        }
+        if(res.code == 500){
+            layer.closeAll();
+            noPower(res);return;
+        }
+        if(res.data.length > 0 ){
+            if(res.data_type == false ){
+                var titleBtn = '<div class="caseWorkRange">' +
+                    '<input type="hidden" id="pageSkey" value="'+skeyStr+'">'+
+                    // '<span class="tenBtn searchSbysBtn" onclick="showSbysCaseDetail(10)">10位编码匹配查询</span>' +
+                    // '<span class="eightBtn searchSbysBtn" onclick="showSbysCaseDetail(8)">8位编码匹配查询</span>' +
+                    '<span class="searchInpSbcase">' +
+                    '<label class="caseLaybel" for="">HS编码</label><input placeholder="8位或10位HS编码" class="layui-input caseSearch sbysHscode" value="'+hscode+'">'+
+                    '<label class="caseLaybel" for="">品名</label><input placeholder="品名" class="layui-input caseSearch sbysName" value="'+skeyStr+'">'+
+                    '<label class="caseLaybel" for="">申报要素</label><div class="vipSbys"><input placeholder="申报要素" class="layui-input caseSearch sbysKey" value=""><img class="sbysKeyVip" src="/static/image/VIP2.png" alt=""></div>'+
+                    '<div class="tenBtn searchSbysBtn" onclick="searchSbysInfo(1)">精准查询</div>' +
+                    '<div class="tenBtn searchSbysBtn" onclick="searchSbysInfo(2)" style="position:relative"><div class="vip"><img class="vippic" src="/static/image/VIP2.png" alt=""></div>模糊查询</div>' +
+                    '</span>' +
+                    '</div>';
+            }else{
+                var eigthCodeStr = hscode.substr(0,8);
+                var titleBtn = '<div class="caseWorkRange">' +
+                    '<input type="hidden" id="pageSkey" value="'+skeyStr+'">'+
+                    // '<span class="disableBtn searchSbysBtn disable">10位编码匹配查询</span>' +
+                    // '<span class="eightBtn searchSbysBtn">8位编码匹配查询</span>' +
+                    '<span class="searchInpSbcase">' +
+                    '<label class="caseLaybel" for="">HS编码</label><input placeholder="8位或10位HS编码" class="layui-input caseSearch sbysHscode" value="'+hscode+'">'+
+                    '<label class="caseLaybel" for="">品名</label><input placeholder="品名" class="layui-input caseSearch sbysName" value="'+skeyStr+'">'+
+                    '<label class="caseLaybel" for="">申报要素</label><div class="vipSbys"><input placeholder="申报要素" class="layui-input caseSearch sbysKey" value=""><img class="sbysKeyVip" src="/static/image/VIP2.png" alt=""></div>'+
+                    '<div class="tenBtn searchSbysBtn" onclick="searchSbysInfo(1)">查询</div>' +
+                    '<div class="tenBtn searchSbysBtn" onclick="searchSbysInfo(2)" style="position:relative"><div class="vip"><img class="vippic" src="/static/image/VIP2.png" alt=""></div>模糊查询</div>' +
+                    '</span>' +
+                    '</div>'+
+                    '<div class="dtarea"><span class="datatips">暂未找到 <span class="codeStr">'+hscode+'</span> 的申报实例，已为您查询 <span class="codeStr">'+eigthCodeStr+'</span> 申报实例数据</span></div>';
+            }
+            sbysCaseHtml += titleBtn;
+            var tableHtml = '<table class="layui-table sbysCaseTable" style="background-color:transparent"><tr>' +
+                '<th style="width:15%" class="sbysCaseTitle">海关商品编码</th>' +
+                '<th style="width:25%" class="sbysCaseTitle">申报货物名称</th>' +
+                '<th style="width:60%" class="sbysCaseTitle">申报要素（规格型号）</th>' +
+                '</tr>';
+            $.each(res.data,function(k,v){
+                tableHtml += '<tr>';
+                tableHtml += '<td>'+v.hs_code+'</td>';
+                tableHtml += '<td>'+v.goods_name_cn+'</td>';
+                tableHtml += '<td>'+v.goods_dec_instance+'</td>';
+                tableHtml += '</tr>';
+            });
+            tableHtml += '</table>';
+            sbysCaseHtml += tableHtml;
+        }else{
+            var titleBtn = '<div class="caseWorkRange">' +
+                '<input type="hidden" id="pageSkey" value="'+skeyStr+'">'+
+                // '<span class="disableBtn searchSbysBtn">10位编码匹配查询</span>' +
+                // '<span class="disableBtn searchSbysBtn">8位编码匹配查询</span>' +
+                '<span class="searchInpSbcase">' +
+                '<label class="caseLaybel" for="">HS编码</label><input placeholder="8位或10位HS编码" class="layui-input caseSearch sbysHscode" value="'+hscode+'">'+
+                '<label class="caseLaybel" for="">品名</label><input placeholder="品名" class="layui-input caseSearch sbysName" value="'+skeyStr+'">'+
+                '<label class="caseLaybel" for="">申报要素</label><div class="vipSbys"><input placeholder="申报要素" class="layui-input caseSearch sbysKey" value=""><img class="sbysKeyVip" src="/static/image/VIP2.png" alt=""></div>'+
+                '<div class="tenBtn searchSbysBtn" onclick="searchSbysInfo(1)">查询</div>' +
+                '<div class="tenBtn searchSbysBtn" onclick="searchSbysInfo(2)" style="position:relative"><div class="vip"><img class="vippic" src="/static/image/VIP2.png" alt=""></div>模糊查询</div>' +
+                '</span>' +
+                '</div>';
+            sbysCaseHtml += titleBtn;
+            var tipsHtml = getTipsBycondition(hscode,skey,null);
+            console.log(tipsHtml);
+            sbysCaseHtml += tipsHtml;
+        }
+
+        sbysCaseHtml += '<div id="sbysCaseFootTips"><img class="tipsBySbysCase" src="/static/hscode/img/sbys_case_tips.png" alt="">温馨提醒：因申报要素存在不定期调整，故历史申报实例仅供参考，请根据所申报货物实际属性按最新申报要素要求填写。</div>';
+        sbysCaseHtml +='<div id="sbysCasePage"></div>';
+        sbysCaseHtml += '</div>';
+        layer.open({
+            type: 1,
+            title: hscode+' 历史申报实例参考',
+            shadeClose: true,
+            shade: false,
+            // maxmin: true, //开启最大化最小化按钮
+            area: ['1100px', '660px'],
+            content: sbysCaseHtml,
+        });
+        // console.log(res.count);
+        createPageHtml(res,1);
+        generateWaterBySbysCase( nowDate+userStr,'关务小二 ');
+    }
+
+    function createPageHtml(res,searchType){
+        layui.use(['laypage'],function(){
+            var laypage = layui.laypage;
+            laypage.render({
+                elem: 'sbysCasePage'
+                ,count: res.count //数据总数，从服务端得到
+                ,limit:res.limit
+                ,layout:['prev', 'page', 'next','count']
+                ,jump: function(obj, first){
+                    //obj包含了当前分页的所有参数，比如：
+                    // console.log(obj.curr); //得到当前页，以便向服务端请求对应页的数据。
+                    // console.log(obj.limit); //得到每页显示的条数
+                    //首次不执行
+                    if(!first){
+                        //do something
+                        if(res.data_type == false){
+                            type = 10;
+                        }else{
+                            type = 8;
+                        }
+                        sbysCasepPage(obj.curr,type,searchType);
+                    }
+                }
+            });
+        });
+    }
+
+
+    function searchSbysInfo(type){
+        var sbysCaseHtml ='';
+        var hscode = $('.sbysHscode').val();
+        var skey = $('.sbysName').val();
+        var sbys = $('.sbysKey').val();
+
+        $('.layui-layer-title').empty();
+        $('.layui-layer-title').append(hscode+' 历史申报实例参考');
+        var param = {hscode:hscode,skey:skey,sbys:sbys,x:gtoKey};
+        var res = getRequestInfo(param,type);
+        if(typeof(res) == 'string'){
+            var res = JSON.parse(res);
+        }
+        if(res.code == 500){
+            layer.closeAll();
+            noPower(res);return;
+        }
+        $('.dtarea').remove();
+        $('.sbysCaseTable').empty();
+        if(res.data.length > 0){
+            var tableHtml = '<tr><th style="width:15%"  class="sbysCaseTitle">海关商品编码</th>' +
+                '<th style="width:25%"  class="sbysCaseTitle">申报货物名称</th>' +
+                '<th style="width:60%"  class="sbysCaseTitle">申报要素（规格型号）</th>' +
+                '</tr>';
+            $.each(res.data,function(k,v){
+                tableHtml += '<tr>';
+                tableHtml += '<td>'+v.hs_code+'</td>';
+                tableHtml += '<td>'+v.goods_name_cn+'</td>';
+                tableHtml += '<td>'+v.goods_dec_instance+'</td>';
+                tableHtml += '</tr>';
+            });
+            sbysCaseHtml += tableHtml;
+            $('.sbysCaseTable').append(sbysCaseHtml);
+        }else{
+            var tips = getTipsBycondition(hscode,skey,sbys);
+            $('.caseWorkRange').after(tips);
+        }
+        $('#sbysCasePage').empty();
+        createPageHtml(res,type);
+    }
+
+    function getTipsBycondition(hscode,skey,sbys){
+        var tipsHtml = '<img style="margin-top:80px" src="/static/image/nodata2.png" alt="">';
+        tipsHtml += '<div><span class="datatips">暂未查询到HS：<span class="codeStr">'+hscode+'</span>';
+        if(skey != undefined ){
+            var str = sessionStorage.getItem('lssl_'+skey);
+            tipsHtml += ' 历史申报品名为 '+'<span class="codeStr">'+str+'</span>';
+        }
+        if(sbys != '' && sbys != null ){
+            tipsHtml += ' 申报要素为 '+'<span class="codeStr">'+sbys+'</span>';
+        }
+        tipsHtml += ' 的历史记录';
+        tipsHtml +='<div>请在右上角更换其他条件重新查询</div>';
+        tipsHtml +='</span></div>';
+        var tips = '<div class="dtarea">'+tipsHtml+'</div>';
+        return tips;
+    }
+
+    function sbysCasepPage(page,datatype,searchType){
+        var sbysCaseHtml ='';
+        var hscode = $('.sbysHscode').val();
+        var skey = $('.sbysName').val();
+        var sbys = $('.sbysKey').val();
+
+        $('.layui-layer-title').empty();
+        $('.layui-layer-title').append(hscode+' 历史申报实例参考');
+        var param = {hscode:hscode,skey:skey,sbys:sbys,x:gtoKey,page:page,type:datatype};
+        var res = getRequestInfo(param,searchType);
+        if(typeof(res) == 'string'){
+            var res = JSON.parse(res);
+        }
+        if(res.code == 500){
+            layer.closeAll();
+            noPower(res);return;
+        }
+        $('.dtarea').remove();
+        $('.sbysCaseTable').empty();
+        if(res.data.length > 0){
+            var tableHtml = '<tr><th style="width:15%"  class="sbysCaseTitle">海关商品编码</th>' +
+                '<th style="width:25%"  class="sbysCaseTitle">申报货物名称</th>' +
+                '<th style="width:60%"  class="sbysCaseTitle">申报要素（规格型号）</th>' +
+                '</tr>';
+            $.each(res.data,function(k,v){
+                tableHtml += '<tr>';
+                tableHtml += '<td>'+v.hs_code+'</td>';
+                tableHtml += '<td>'+v.goods_name_cn+'</td>';
+                tableHtml += '<td>'+v.goods_dec_instance+'</td>';
+                tableHtml += '</tr>';
+            });
+            sbysCaseHtml += tableHtml;
+            $('.sbysCaseTable').append(sbysCaseHtml);
+        }else{
+            var tips = getTipsBycondition(hscode,skey,sbys);
+            $('.caseWorkRange').after(tips);
+        }
+    }
+
+    function isRealNum(val){
+        // isNaN()函数 把空串 空格 以及NUll 按照0来处理 所以先去除
+        if(val === "" || val ==null){
+            return false;
+        }
+        if(!isNaN(val)){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    function accMul(arg1, arg2) {
+        var m = 0,
+            s1 = arg1.toString(),
+            s2 = arg2.toString();
+        try {
+            m += s1.split(".")[1].length
+        } catch (e) {}
+        try {
+            m += s2.split(".")[1].length
+        } catch (e) {}
+        return Number(s1.replace(".", "")) * Number(s2.replace(".", "")) / Math.pow(10, m)
+    }
+
+    //获取申报要素信息
+    function showHsCode(code){
+        if(!code) {return;}
+
+        var url = 'https://api.guanwuxiaoer.com/api/hscode/getSbysData';
+        var type ='post';
+        var param = {hscode:code,x:gtoKey};
+        var res = requestApi(url,type,param)
+        if(typeof(res) == 'string'){
+            var res = JSON.parse(res);
+        }
+        if(res.code == 500){
+            noPower(res);return;
+        }
+
+        if(res.code != 200 ){return;}
+        var sbys_data= res.sbys_data;
+        layui.use(['table','layer'], function(){
+            var table = layui.table;
+            var layer = layui.layer;
+            //第一个实例
+            table.render({
+                elem: '#hsCodeTable'
+                ,width:860
+                ,height: 320
+                ,data:sbys_data
+                ,limit:30
+                ,cols: [[ //表头
+                    {type:"numbers",title:"序号",width:40}
+                    ,{field: 'element', title: '申报要素', width:300}
+                    ,{field: 'is_required', title: '是否必填',templet: '#isNotTpl', width:90}
+                    ,{field: 'fac_code', title: '要素编码', width:120}
+                    ,{field: 'fac_content', title: '要素内容',templet: '#facContentTpl', width: 215}
+                    ,{field: 'ie_flag', title: '进出口', templet: '#IEFlagTpl',width: 85}
+                ]]
+            });
+            layer.open({
+                type: 1,
+                area: ['900px', '420px'],
+                title: "商品编码 "+code+" 申报要素信息",
+                closeBtn: 1,
+                skin: 'yourclass',
+                content: $('#hsCodeDialog')
+            });
+            generateWaterBySbysCase( nowDate+userStr,'关务小二 ','hs');
+        });
+    }
+
+    function showTaxDetail(detailStr,td,event){
+        var react = td.getBoundingClientRect()
+        var x = react.left;
+        var y = react.top;
+        if(!detailStr || detailStr=="{}"){return false}
+        var detailObj = JSON.parse(detailStr)
+        var htmlStr = "<div>"
+            + "<b>协定全称：</b>"
+            + detailObj.xdqc
+            + "<br/>"
+            + "<b>成员国及地区：</b>"
+            + detailObj.xdcyg
+            + "<br/>"
+            + "<b>进口原产地证：</b>"
+            + detailObj.jkycdz
+            + "<br/>"
+            + "<b>出口原产地证：</b>"
+            + detailObj.ckycdz
+            + "<br/>"
+            + "<b>原产地证联网状态：</b>"
+            + detailObj.ycdzlwzt
+            + "<br/>"
+            + "<b>备注：</b>"
+            + detailObj.remark
+            + "</div>";
+        $(td).css("outline","1px #1e9fff solid")
+        $("#tooltip").html(htmlStr);
+        $("#tooltip").css({"position":"fixed","z-index":'2000',"left":(x-1)+'px',"top":y+39+'px'});
+        $("#tooltip").show();
+        $("#tooltip").show();
+    }
+
+    function hideTaxDetail(td){
+        $(td).css("outline","none")
+        $("#tooltip").empty();
+        $("#tooltip").hide()
+    }
+</script>
+
+
+
+<script type="text/html" id="isNotTpl">
+    {{#  if(d.is_required === 1){ }}
+    <span><i style="color:#f00;font-style:normal">*</i> 必填</span>
+    {{#  } else { }}
+    <span >选填</span>
+    {{#  } }}
+</script>
+<script type="text/html" id="facContentTpl">
+    {{#  if(["原厂商中文名称","原厂商英文名称","反倾销税率","反补贴税率"].indexOf(d.element)!=-1){ }}
+    <span style="color:#009688;font-style:normal;cursor: pointer;" onclick="showContent('fqx','{{d.hs_id}}')">详情</span> {{d.fac_content}}
+    {{#  } else { }}
+    {{ d.fac_content }}
+    {{#  } }}
+</script>
+<script type="text/html" id="IEFlagTpl">
+    {{#  if(d.ie_flag ===  'E' || d.element == '出口享惠情况'){ }}
+    <span >出口</span>
+    {{#  } else if(['原厂商中文名称','原厂商英文名称','反倾销税率','反补贴税率','是否符合价格承诺'].indexOf(d.element) != -1) { }}
+    <span >进口</span>
+    {{#  } else { }}
+    <span >进出口</span>
+    {{#  } }}
+</script>
+<script>
+    // 百度统计
+    var _hmt = _hmt || [];
+    (function() {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?fd5afdcf9e5be520b5a33a47bda3d2c6";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+<script src="/static/js/html2canvas.js" type="text/javascript"></script>
+<script>
+    // 一键截图 浏览器下载
+    function returnImg(wrapDom, callback) {
+        var canvasdom = document.querySelector('.'+wrapDom);
+        var w = canvasdom.clientWidth;
+        var h = canvasdom.clientHeight;
+        var canvas = document.createElement("canvas");
+        canvas.width = w ;
+        canvas.height = h ;
+        canvas.style.width = w + "px";
+        canvas.style.height = h + "px";
+        if (h > 4900) {
+            h = 4900;
+        }
+
+        html2canvas(canvasdom, {
+            scale: 1,
+            canvas: canvas,
+            height: h,
+            backgroundColor: "#ffffff",
+            useCORS: true,
+            logging: true
+        }).then(function (canvas) {
+            var billSrc = canvas.toDataURL("image/png");
+            var image = new Image();
+            image.src = billSrc;
+            image.style.width = "100%";
+            callback(image)
+        })
+    }
+    function downloadImg(hscode){
+        if (browser.versions.trident) {
+            layer.msg("抱歉！该功能只支持谷歌、火狐或Edge等非IE内核浏览器")
+            return false
+        }
+        returnImg("infoContent", function (img) {
+            // var backHtml = '<a href="javascript:" class="backfulldata" style="text-align:center;color:#FF6A00;width:40px;height: 24px;line-height: 24px;display:inline-block;background-color:#FFF3EB;border:1px solid #FFC399;font-size:12px;float:right;margin-top: 10px;border-radius: 2px">返回</a>';
+            // $("#showImgBox").html('<div class="reportimg"></div><div style="padding:0 20px;color:#FF6A00;background:#FFF3EB;font-size:14px;position: fixed;top:0;left:0;right:0;height:44px;line-height:44px;">' + savepictext + backHtml + '</div>');
+            // $("#showImgBox").find(".reportimg").html(img);
+            // $("#tplWrap").hide().after($("#showImgBox"));
+            // $("#showImgBox").find(".backfulldata").click(function () {
+            //     $("#tplWrap,#savePic,#savePicPc").show().siblings("#showImgBox").html("");
+            // })
+
+            var a = document.createElement("a");
+            var event = new MouseEvent("click");
+            a.download = document.title +' ['+hscode+'] 详情'; // 设置图片名称
+            a.href = img.src; // 将生成的URL设置为a.href属性
+            a.dispatchEvent(event); // 触发a的单击事件
+        })
+    }
+</script>
+
+<script>
+    $(function(){
+        setTimeout(function(){
+            // 释放readonly
+            if($('#btn').length){
+                $('#btn').prop("readonly", false)
+            }
+        },1000)
+    })
+
+    // 搜索历史记录管理功能
+
+    // 初始化
+    var localMemoryArrStr = window.localStorage.getItem("memoryItems") || []
+    if(localMemoryArrStr && localMemoryArrStr.length){
+        var localMemoryArr =localMemoryArrStr.split(",");
+        var htmlStr=''
+        for(var i=0; i<localMemoryArr.length; i++){
+            htmlStr+= '<div class="item">'
+                +'<span class="code">'+localMemoryArr[i]+'</span>'
+                +'<span class="del">×</span>'
+                +'</div>'
+        }
+        $("#memoryItemBox").html(htmlStr)
+    }
+
+    $("#memorySearchBox .item").on("click",function(){
+        var txt = $(this).find(".code").text()
+        // console.log("txt",txt)
+        $("#memorySearchBox").slideUp();
+        $("#btn").val(txt)
+    })
+
+    NOMATCH = true
+    $("#btn").on({
+        'focus':function(){
+            if(!localMemoryArrStr || !localMemoryArrStr.length){
+                return
+            }
+            if($("#btn").val() == ""){
+                $("#memorySearchBox").show();
+            }
+            if($("#btn").val().length < 10 && !NOMATCH){
+                $("#memorySearchBox").show();
+            }
+        },
+        'input':function(event){
+            var val = event.target.value
+            if(!val){
+                var localMemoryArrStr = window.localStorage.getItem("memoryItems") || []
+                if(localMemoryArrStr && localMemoryArrStr.length){
+                    var localMemoryArr =localMemoryArrStr.split(",");
+                    var htmlStr=''
+                    for(var i=0; i<localMemoryArr.length; i++){
+                        htmlStr+= '<div class="item">'
+                            +'<span class="code">'+localMemoryArr[i]+'</span>'
+                            +'<span class="del">×</span>'
+                            +'</div>'
+                    }
+                    $("#memoryItemBox").html(htmlStr)
+                }
+                $("#memorySearchBox").show();
+                return
+            }
+            NOMATCH = true
+            matchForMemory(val)
+        },
+        "keyup":function(event){
+            // 监听backspace事件
+            var key = event.which || event.keyCode
+            if(key == 8){
+                var val = $("#btn").val()
+                if(!val){
+                    var localMemoryArrStr = window.localStorage.getItem("memoryItems") || []
+                    if(localMemoryArrStr && localMemoryArrStr.length){
+                        var localMemoryArr =localMemoryArrStr.split(",");
+                        var htmlStr=''
+                        for(var i=0; i<localMemoryArr.length; i++){
+                            htmlStr+= '<div class="item">'
+                                +'<span class="code">'+localMemoryArr[i]+'</span>'
+                                +'<span class="del">×</span>'
+                                +'</div>'
+                        }
+                        $("#memoryItemBox").html(htmlStr)
+                    }
+                    $("#memorySearchBox").show();
+                    return
+                }
+                NOMATCH = true
+                matchForMemory(val)
+            }
+        }
+    })
+
+    $(document).on("click",function(event){ // 点击任意处隐藏搜索下拉历史记录
+        if(!event || !event.target){
+            return
+        }
+        if(event.target.id != "memorySearchBox" && event.target.id!= "btn" ){
+            $("#memorySearchBox").hide();
+            if(event.target.className=="code"){
+                var txt = event.target.innerText
+                $("#btn").val(txt)
+            }
+            if(event.target.className=="del"){
+                var code = ''+event.target.previousSibling.innerText;
+                // console.log('code',code)
+                if(code){
+                    // 查找 并删除
+                    var codeArr = window.localStorage.getItem("memoryItems").split(",")
+                    var htmlStr=''
+                    var newCodeArr = [];
+                    for(var i=0;i<codeArr.length;i++){
+                        // console.log('----',code,codeArr[i])
+                        if(code != codeArr[i]){
+                            htmlStr+= '<div class="item">'
+                                +'<span class="code">'+localMemoryArr[i]+'</span>'
+                                +'<span class="del">×</span>'
+                                +'</div>'
+                            newCodeArr.push(codeArr[i])
+                        }
+                    }
+                    // console.log('newCodeArr',newCodeArr)
+                    window.localStorage.setItem("memoryItems",newCodeArr.join(","))
+                    $("#memoryItemBox").html(htmlStr)
+                }
+            }
+            event.stopPropagation();
+        }
+    })
+    // 删除单条
+    // $("#memoryItemBox .del").on("click",function(){
+    //     var code = $(this).prev("span").text();
+    //     if(code){
+    //         // 查找 并删除
+    //         var codeArr = window.localStorage.getItem("memoryItems").split(",")
+    //         var htmlStr=''
+    //         var newCodeArr = [];
+    //         for(var i=0;i<codeArr.length;i++){
+    //             console.log('----',code,codeArr[i])
+    //             if(code != codeArr[i]){
+    //                 htmlStr+= '<div class="item">'
+    //                     +'<span class="code">'+localMemoryArr[i]+'</span>'
+    //                     +'<span class="del">×</span>'
+    //                     +'</div>'
+    //                 newCodeArr.push(codeArr[i])
+    //             }
+    //         }
+    //         window.localStorage.setItem("memoryItems",newCodeArr.join(","))
+    //         $("#memoryItemBox").html(htmlStr)
+    //     }
+    // })
+    // 删除所有记录
+    function deleteAll(){
+        // 确定
+        layer.confirm('确定清空历史查询记录?', {icon: 3, title:'提示'}, function(index){
+            $("#memorySearchBox").hide();
+            $("#memoryItemBox").empty()
+            window.localStorage.setItem("memoryItems","")
+            layer.close(index);
+        });
+    }
+
+
+    // 模糊匹配
+    function matchForMemory(val){
+        if(!localMemoryArrStr || !localMemoryArrStr.length){
+            return false
+        }
+        var newArr = []
+        var localMemoryArr = localMemoryArrStr.split(",")
+        // 造新的下拉数据
+        $("#memoryItemBox").empty()
+        var htmlStr ='';
+        for(var i=0; i<localMemoryArr.length; i++){
+            if(localMemoryArr[i].indexOf(val)!=-1){
+                newArr.push(localMemoryArr[i])
+            }
+        }
+
+        if(!newArr.length){
+            $("#memorySearchBox").hide();
+            NOMATCH = true
+        }else{
+            NOMATCH = false
+            for(var i=0; i<newArr.length; i++){
+                htmlStr+= '<div class="item">'
+                    +'<span class="code">'+newArr[i]+'</span>'
+                    +'<span class="del">×</span>'
+                    +'</div>'
+            }
+            $("#memoryItemBox").html(htmlStr)
+            $("#memorySearchBox").show();
+        }
+    }
+
+
+    function glSub(){
+        window.location.href = 'hscode.php?action=subscribe';
+    }
+
+    function tipsA(){
+        layer.msg("该功能内测中，敬请期待！");
+    }
+
+    function RandomIndex(min, max, i){
+        var _charStr = 'abacdefghjklmnopqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ0123456789';
+        let index = Math.floor(Math.random()*(max-min+1)+min),
+            numStart = _charStr.length - 10;
+        //如果字符串第一位是数字，则递归重新获取
+        if(i==0&&index>=numStart){
+            index = RandomIndex(min, max, i);
+        }
+        //返回最终索引值
+        return index;
+    }
+
+    function getRandomString(len){
+        var _charStr = 'abacdefghjklmnopqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ0123456789';
+        let min = 0, max = _charStr.length-1, _str = '';
+        //判断是否指定长度，否则默认长度为15
+        len = len || 15;
+        //循环生成字符串
+        for(var i = 0, index; i < len; i++){
+            index = RandomIndex(min, max, i);
+            _str += _charStr[index];
+        }
+        return _str;
+    }
+</script>
+<script src="/static/js/bootstrasp.min.js?1685289362"></script><script src="/static/js/jqureys.min.js?1685289362"></script><div class="layui-layer-move"></div></body><!--<script src='/static/hscode/js/public.js'></script>--></html>
