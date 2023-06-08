@@ -30,4 +30,4 @@ webdriver.ActionChains(browser).move_to_element(next_btn).click(next_btn).perfor
 
 print("click next page")
 
-time.sleep(100)
+time.sleep(20)
