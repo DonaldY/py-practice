@@ -3,8 +3,13 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver import ChromeOptions
+import time
 
-browser = webdriver.Chrome()
+
+option = ChromeOptions()
+option.add_experimental_option("debuggerAddress", "127.0.0.1:9222")
+browser = webdriver.Chrome(options=option)
 try:
     browser.get('https://www.baidu.com')      # 直接访问 百度
     input = browser.find_element(By.ID, 'kw') # 按照 ID 定位：id=kw
@@ -15,5 +20,7 @@ try:
     print(browser.current_url)    # 打印 url
     print(browser.get_cookies())  # 打印 cookies
     print(browser.page_source)    # 打印 页面源码
+
+    time.sleep(10)
 finally:
     browser.close()
